@@ -104,4 +104,4 @@ pjax: true
 deploy:
   type: git
   repo: git@github.com:blueberryCoder/blueberryCoder.github.io.git
-  branch: main
+  branch: dev
