@@ -740,6 +740,11 @@ hexo-theme-landscape@^1.0.0:
   resolved "https://mirrors.cloud.tencent.com/npm/hexo-theme-landscape/-/hexo-theme-landscape-1.1.0.tgz"
   integrity sha512-nszjixBEiEDZjf7glAGbHg0nKGHZdUDwzFVVdRDeu4FeHfGcY5CZNl9sF4vSligjnD8IwFXpDfx5E+GRmNKvWg==
 
+hexo-theme-next@^8.24.1:
+  version "8.24.1"
+  resolved "https://mirrors.cloud.tencent.com/npm/hexo-theme-next/-/hexo-theme-next-8.24.1.tgz"
+  integrity sha512-DTa+umV5XTDa8XEtiLkaKDzgHqlnrj5HXi+6auI690TJdbIULm9sgaUQFkriDr2jeeGQDUV4ptsvgTTRaZjiGw==
+
 hexo-util@^2.7.0:
   version "2.7.0"
   resolved "https://mirrors.cloud.tencent.com/npm/hexo-util/-/hexo-util-2.7.0.tgz"
