@@ -19,22 +19,35 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blueberrycoder.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.24.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Keep learning">
-<meta property="og:url" content="https://blueberrycoder.github.io/index.html">
+    <meta name="description" content="前言 色彩模型（color model）是用一组数组（3个或4个）来描述颜色的数学模型。此文就来介绍一下常见的一些色彩模型。 RGB色彩模型 RGB色彩模型是由红(R)、绿(G)、蓝(B)组成的一种加法颜色模型。它是我们在电视机、计算机中种常用的颜色模型。RGB色彩模型是一种设备依赖(device-dependent)的色彩模型，不同的设备因为厂商有不同的物理实现（比如：使用不同的荧光粉、不同的染">
+<meta property="og:type" content="article">
+<meta property="og:title" content="色彩模型">
+<meta property="og:url" content="https://blueberrycoder.github.io/2025/08/25/graphic/colormodel/index.html">
 <meta property="og:site_name" content="Keep learning">
+<meta property="og:description" content="前言 色彩模型（color model）是用一组数组（3个或4个）来描述颜色的数学模型。此文就来介绍一下常见的一些色彩模型。 RGB色彩模型 RGB色彩模型是由红(R)、绿(G)、蓝(B)组成的一种加法颜色模型。它是我们在电视机、计算机中种常用的颜色模型。RGB色彩模型是一种设备依赖(device-dependent)的色彩模型，不同的设备因为厂商有不同的物理实现（比如：使用不同的荧光粉、不同的染">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_model_rgb.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_srgb.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_crt_tv.webp">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_lcd.jpg">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_rgb_cube.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/yuv420.svg.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_hsl_hsv_models.svg.png">
+<meta property="article:published_time" content="2025-08-25T12:02:24.000Z">
+<meta property="article:modified_time" content="2025-08-25T13:23:10.638Z">
 <meta property="article:author" content="blueberry">
+<meta property="article:tag" content="graphic">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blueberrycoder.github.io/images/color_model_rgb.png">
 
 
-<link rel="canonical" href="https://blueberrycoder.github.io/">
+<link rel="canonical" href="https://blueberrycoder.github.io/2025/08/25/graphic/colormodel/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"en","comments":"","permalink":"","path":"index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://blueberrycoder.github.io/2025/08/25/graphic/colormodel/","path":"2025/08/25/graphic/colormodel/","title":"色彩模型"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Keep learning</title>
+<title>色彩模型 | Keep learning</title>
   
 
 
@@ -90,7 +103,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">Keep learning</h1>
+      <p class="site-title">Keep learning</p>
       <i class="logo-line"></i>
     </a>
   </div>
@@ -116,7 +129,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           Table of Contents
@@ -129,6 +142,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rgb%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">RGB色彩模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rgb%E8%AE%BE%E5%A4%87"><span class="nav-number">2.1.</span> <span class="nav-text">RGB设备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8C%85packed%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.1.1.</span> <span class="nav-text">打包(packed)格式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%A0%E4%BD%95%E8%A1%A8%E7%A4%BA"><span class="nav-number">2.2.</span> <span class="nav-text">几何表示</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#yuv%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">YUV色彩模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8Ergb%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.1.</span> <span class="nav-text">与RGB的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#itu-r-bt.601-%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.1.1.</span> <span class="nav-text">ITU-R BT.601 转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#itu-r-bt.709-%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.1.2.</span> <span class="nav-text">ITU-R BT.709 转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.1.3.</span> <span class="nav-text">打包格式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hsl%E5%92%8Chsv%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">HSL和HSV色彩模型</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -167,16 +181,17 @@
 
     </div>
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
+
+  
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
     <link itemprop="mainEntityOfPage" href="https://blueberrycoder.github.io/2025/08/25/graphic/colormodel/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -190,13 +205,13 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | Keep learning">
+      <meta itemprop="name" content="色彩模型 | Keep learning">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/08/25/graphic/colormodel/" class="post-title-link" itemprop="url">色彩模型</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          色彩模型
+        </h1>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -228,8 +243,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="前言">前言</h1>
+    <div class="post-body" itemprop="articleBody"><h1 id="前言">前言</h1>
 <p>色彩模型（color
 model）是用一组数组（3个或4个）来描述颜色的数学模型。此文就来介绍一下常见的一些色彩模型。</p>
 <h1 id="rgb色彩模型">RGB色彩模型</h1>
@@ -419,7 +433,6 @@ shade，加黑）时，饱和度不变。在 HSL
 中，与白混合（tint，加白）时饱和度也不变；只有同时与黑和白混合（tone，加灰）时，饱和度才会小于
 1。而在 HSV 中，仅加白就会降低饱和度。</p>
 
-      
     </div>
 
     
@@ -427,109 +440,25 @@ shade，加黑）时，饱和度不变。在 HSL
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+          <div class="post-tags">
+              <a href="/tags/graphic/" rel="tag"># graphic</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/08/24/hello-world/" rel="prev" title="Hello World">
+                  <i class="fa fa-angle-left"></i> Hello World
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
     </footer>
   </article>
 </div>
 
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blueberrycoder.github.io/2025/08/24/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="blueberry">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Keep learning">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | Keep learning">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/08/24/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2025-08-24 08:52:05" itemprop="dateCreated datePublished" datetime="2025-08-24T08:52:05+08:00">2025-08-24</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-08-25 20:58:53" itemprop="dateModified" datetime="2025-08-25T20:58:53+08:00">2025-08-25</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very
-first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for
-more info. If you get any problems when using Hexo, you can find the
-answer in <a
-target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or
-you can ask me on <a
-target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="quick-start">Quick Start</h2>
-<h3 id="create-a-new-post">Create a new post</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a
-target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="run-server">Run server</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="generate-static-files">Generate static files</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a
-target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a
-target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
 
 
 
