@@ -1220,7 +1220,7 @@ pre code {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #638253;
+  background: #2d3888;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -2511,4 +2511,20 @@ header.header {
   .sidebar-active .footer-fixed {
     left: 320px;
   }
+}
+.img-row,
+.img-row > * {
+  display: inline-flex;
+  gap: 8px;
+  flex-direction: row;
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: auto;
+}
+/* 真正的图片元素 */
+.img-row img {
+  display: block;
+  height: auto;
 }

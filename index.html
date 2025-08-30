@@ -205,9 +205,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2025-08-25 20:02:24 / Modified: 21:23:10" itemprop="dateCreated datePublished" datetime="2025-08-25T20:02:24+08:00">2025-08-25</time>
+      <time title="Created: 2025-08-25 20:02:24" itemprop="dateCreated datePublished" datetime="2025-08-25T20:02:24+08:00">2025-08-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2025-08-30 14:12:21" itemprop="dateModified" datetime="2025-08-30T14:12:21+08:00">2025-08-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -231,31 +237,34 @@
     <div class="post-body" itemprop="articleBody">
           <h1 id="前言">前言</h1>
 <p>色彩模型（color
-model）是用一组数组（3个或4个）来描述颜色的数学模型。此文就来介绍一下常见的一些色彩模型。</p>
+model）是用一组数组（每个颜色用3个或4个数字来表示）来描述颜色的数学模型。此文就来介绍一下常见的一些色彩模型。</p>
 <h1 id="rgb色彩模型">RGB色彩模型</h1>
 <p>RGB色彩模型是由红(R)、绿(G)、蓝(B)组成的一种加法颜色模型。它是我们在电视机、计算机中种常用的颜色模型。RGB色彩模型是一种设备依赖(device-dependent)的色彩模型，不同的设备因为厂商有不同的物理实现（比如：使用不同的荧光粉、不同的染料），所提供的红、绿、蓝的实现等级不一样，甚至同一台设备随着时间推移老化提供出的颜色也不是不一样的。所以如果没有色彩管理(color
-management)，不同的设备将不能提供出一致的颜色。 ## 加法颜色模型
-要用RGP生成一个颜色，需要将3种基础颜色（红、绿、蓝）叠加在一起（如：可以通过发射出3种光线直接进入人眼、或在白纸上照射3种光，通过反射进入人眼）。每束基础光都有自己的强度，假设从（0.0
-到 1.0），混合在一起形成一种颜色。
-<img src="/images/color_model_rgb.png" alt="RGB加法" width="360">
-从上面这幅图我们可以看出，红、绿、蓝可以叠加成白色、红和绿可以叠加成黄色、红和蓝可以叠加成品红色、绿和蓝可以叠加成蓝绿色。
+management)，不同的设备将不能提供出一致的颜色。</p>
+<h2 id="加法颜色模型">加法颜色模型</h2>
+<p>要用RGB生成一个颜色，需要将3种基础颜色（红、绿、蓝）叠加在一起（如：可以通过发射出3种光线直接进入人眼、或在白纸上照射3种光，通过反射进入人眼）。每束基础光都有自己的强度，假设从（0.0
+到 1.0），混合在一起形成一种颜色。</p>
+<p><img src="/images/color_model_rgb.png" alt="RGB加法" width="360"></p>
+<p>从上面这幅图我们可以看出，红、绿、蓝可以叠加成白色、红和绿可以叠加成黄色、红和蓝可以叠加成品红色、绿和蓝可以叠加成蓝绿色。
 我们把这3个基础色也称之为颜色的分量。如果所有的分量（基础颜色）的强度都为0，我们将只能得到黑色。如果所有的分量都为1我们将得到白色，该点也是该颜色系统的白点(white
-point)。当所有分量的强度都相等时，我们得到是一种灰色，强度越低颜色越暗，强度越高颜色越亮。当所有分量强度不同时，我们将得到具有色相的颜色；其饱和度取决于所用原色中最强与最弱分量强度之间的差异——差异越大，饱和度越高；差异越小，饱和度越低。
-RGB色彩模型并没有规定红、绿、蓝具体的实现、即没有定义原色本身是什么（比如它到底有多红？、有多蓝？、有多绿？、强度分布是怎么样的？）。所以它是一种相对的色彩空间。只有当红、绿、蓝这3种基础颜色并精准定义后，这个颜色空间才会变为绝对颜色空间，如sRGB，AdobeRGB。
-原色的选择与人眼的生理结构有关，“良好”的原色应当是能最大化人眼视锥细胞对不同波长的影响差异（在色度图中形成更大的颜色三家形）。人眼中正常的三类对光敏感的感光受体（锥体细胞）分别对黄色（长波，L）、绿色（中波，M）和紫色（短波，S）光最为敏感（各自的峰值波长分别约为
+point)。当所有分量的强度都相等时，我们得到是一种灰色，强度越低颜色越暗，强度越高颜色越亮。当所有分量强度不同时，我们将得到具有色相的颜色；其饱和度取决于所用原色中最强与最弱分量强度之间的差异——差异越大，饱和度越高；差异越小，饱和度越低。</p>
+<p>RGB色彩模型并没有规定红、绿、蓝具体的实现、即没有定义原色本身是什么（比如它相对于人眼感知到的结果有多红？、有多蓝？、有多绿？、强度分布是怎么样的？）。所以它是一种相对的色彩空间。只有当红、绿、蓝这3种基础颜色并精准定义后，这个颜色空间才会变为绝对颜色空间，如sRGB，AdobeRGB。</p>
+<p>原色的选择与人眼的生理结构有关，“良好”的原色的定义应当是能最大化人眼视锥细胞对不同波长的影响差异（在色度图中形成更大的颜色三家形）。人眼中正常的三类对光敏感的感光受体（锥体细胞）分别对黄色（长波，L）、绿色（中波，M）和紫色（短波，S）光最为敏感（各自的峰值波长分别约为
 570 nm、540 nm 和 440
-nm[7]）。三类受体所接收到信号的差异，使得大脑能够区分非常广泛的颜色范围；总体上，人眼对黄绿色光以及绿到橙区间的色相差异最为敏感。
-仅使用三种原色并不足以复现所有颜色；只有位于由三原色色度所定义的颜色三角形内的那些颜色，才能通过对这三种光非负量进行加法混合加以再现。
-如图，如sRGB颜色模型在色域图中的分布。
-<img src="/images/color_srgb.png" alt="sRGB" width="360"></p>
+nm）。三类受体所接收到信号的差异，使得大脑能够区分非常广泛的颜色范围；总体上，人眼对黄绿色光以及绿到橙区间的色相差异最为敏感。</p>
+<p><img src="/images/color_cone_cell_resp.png" alt="cone" width="360"></p>
+<p>仅使用三种原色并不足以复现所有颜色；只有位于由三原色色度所定义的颜色三角形内的那些颜色，才能通过对这三种光非负量进行加法混合加以再现。</p>
+<p>如图，是sRGB颜色模型在色域图中的分布。</p>
+<p><img src="/images/color_srgb.png" alt="sRGB" width="360"></p>
 <h2 id="rgb设备">RGB设备</h2>
-<p>常见的RGB显示设备有：阴极射线管(CRT)、液晶显示（LCD）等设备。屏幕上的每个像素由三个微小、彼此非常接近但仍相互独立的
+<p>常见的RGB显示设备有：阴极射线管(CRT)、液晶显示（LCD）、OLED等设备。屏幕上的每个像素由三个微小、彼此非常接近但仍相互独立的
 RGB
-发光单元驱动构成。在通常的观看距离下，这些独立的光源不可分辨，人的眼睛会把它们感知为某一种均匀的颜色。所有像素在矩形屏幕表面共同排列，便构成了彩色图像。在数字图像处理过程中，每个像素都可以在计算机内存或接口硬件（例如显卡）中，用红、绿、蓝三个颜色分量的二进制数值来表示。经过适当的管理，这些数值会通过伽马校正转换为强度或电压，以校正某些设备固有的非线性，从而在显示设备上再现预期的亮度/强度。
-CRT显示： <img src="/images/color_crt_tv.webp" alt="crt" width="360">
-LCD显示设备：
-<img src="/images/color_lcd.jpg" alt="lcd" width="360"></p>
-<h3 id="打包packed格式">打包(packed)格式</h3>
+发光单元驱动构成。在通常的观看距离下，这些独立的光源不可分辨，人的眼睛会把它们感知为某一种均匀的颜色。所有像素在矩形屏幕表面共同排列，便构成了彩色图像。在数字图像处理过程中，每个像素都可以在计算机内存或接口硬件（例如显卡）中，用红、绿、蓝三个颜色分量的二进制数值来表示。经过适当的管理，这些数值会通过伽马校正转换为强度或电压，以校正某些设备固有的非线性，从而在显示设备上再现预期的亮度/强度。</p>
+<p>CRT显示：</p>
+<p><img src="/images/color_crt_tv.webp" alt="crt" width="360"></p>
+<p>LCD显示设备：</p>
+<p><img src="/images/color_lcd.jpg" alt="lcd" width="360"></p>
+<h3 id="打包格式">打包格式</h3>
 <p>设备内存中存储常用RGB_888、RGBA_8888、RGB_565等来存储RGB颜色。RGB_888即R、G、B的强度分别用8位二进制来表示。在这种体系下，允许16,777,216（256³
 或 2²⁴） 种离散的 R、G、B
 组合。为增加明暗层次，人们采用了多种做法；一些格式（如 .png、.tga
@@ -269,16 +278,15 @@ RGB 模型而言，这对应于一个使用 0–1 非负取值的立方体：将
 (0, 0, 0) 的原点，沿三条坐标轴分量强度递增，直到对角顶点 (1, 1, 1)
 的白色。 一个 RGB 三元组 (r, g, b)
 表示该颜色在立方体（或其面、棱）中的三维坐标。这样一来，只需计算两种 RGB
-颜色之间的距离就能评估它们的颜色相似度：距离越短，相似度越高。超出色域（out-of-gamut）的计算也可以用这种方式进行。
-<img src="/images/color_rgb_cube.png" alt="rgb_cube" width="360"></p>
+颜色之间的距离就能评估它们的颜色相似度：距离越短，相似度越高。超出色域的计算也可以用这种方式进行。</p>
+<p><img src="/images/color_rgb_cube.png" alt="rgb_cube" width="360"></p>
 <h1 id="yuv色彩模型">YUV色彩模型</h1>
 <p>Y′UV（也写作 YUV）是模拟彩色电视标准中采用的色彩模型。一种颜色用一个
 Y′ 分量（亮度信号，luma）和两个色度分量 U、V
-来描述。撇号（′）表示这个亮度 Y′
-是从经过伽马校正的RGB输入计算得到的，因此与<strong>真实的亮度（luminance）</strong>不同。如今，在计算机行业中，“YUV”这一术语常被用来泛指以
-YCbCr 编码的各种色彩空间。 在电视制式里，色彩信息（U 与
-V）通过副载波单独加入，这样黑白电视机也能接收并以其原生的黑白方式显示彩色节目的传输，而无需额外的传输带宽。
-Y′UV是在工程师们希望在黑白电视基础设施上实现彩色电视时发明的。他们需要一种既兼容黑白电视、又能加入色彩的传输方式。亮度分量（Y′）本就作为黑白信号而存在；他们在此基础上加入
+来描述。撇号（′）表示这个亮度Y′是从经过伽马校正的RGB输入计算得到的，因此与真实的亮度（luminance）不同。如今，在计算机行业中，“YUV”这一术语常被用来泛指以
+YCbCr 编码的各种色彩空间。</p>
+<p>在电视制式里，色彩信息（U与V）通过副载波单独加入，这样黑白电视机也能接收并以其原生的黑白方式显示彩色节目的传输，而无需额外的传输带宽。</p>
+<p>Y′UV是在工程师们希望在黑白电视基础设施上实现彩色电视时发明的。他们需要一种既兼容黑白电视、又能加入色彩的传输方式。亮度分量（Y′）本就作为黑白信号而存在；他们在此基础上加入
 U、V 色度信号作为解决方案。 之所以选用 U、V 来表示色度，而不是直接传输
 R、B，是因为 U、V 是色差信号。换言之，U、V
 告诉电视机在不改变亮度的情况下把某一点的颜色偏移到何处，或者以此消彼长地调整两种原色的相对亮度，以及应偏移多少。当
@@ -296,85 +304,140 @@ R、G、B 设定权重并求和得到 Y′，它表示整体亮度（luma/近似
 luminance）。随后将 U、V 计算为 B、R 与 Y′
 的差值按比例缩放后的结果。</p>
 <h3 id="itu-r-bt.601-转换">ITU-R BT.601 转换</h3>
-<p>用于标清电视（SDTV）的 <strong>Y′CbCr</strong> 形式由 ITU-R
-BT.601（原 CCIR 601）为<strong>数字分量视频</strong>定义，其来源是相应的
-RGB 空间（ITU-R BT.470-6 System M 的原色）。常数为： <span
+<p>用于标清电视（SDTV）的Y′CbCr形式由 ITU-R BT.601（原 CCIR
+601）为数字分量视频定义，其来源是相应的 RGB 空间（ITU-R BT.470-6 System
+M 的原色）。常数为： <span
 class="math display"><em>K</em><sub><em>R</em></sub> = 0.299,  <em>K</em><sub><em>G</em></sub> = 0.587,  <em>K</em><sub><em>B</em></sub> = 0.114.</span>
-由上述常数与公式，可推得 BT.601 下的关系。 1. 模拟 R′G′B′ → 模拟 YPbPr：
-<span class="math display">$$
+由上述常数与公式，可推得 BT.601 下的关系。</p>
+<h4 id="rgb转yuv">RGB转YUV</h4>
+<p><strong>模拟信号R′G′B′转模拟 YPbPr</strong> <span
+class="math display">$$
 \begin{aligned}
 Y'  &amp;= 0.299\,R' + 0.587\,G' + 0.114\,B',\\
 P_B &amp;= -0.168736\,R' - 0.331264\,G' + 0.5\,B',\\
 P_R &amp;= \phantom{-}0.5\,R' - 0.418688\,G' - 0.081312\,B'.
 \end{aligned}
-$$</span> 2. 模拟 R′G′B′ → 数字 Y′CbCr（每分量 8 位）： <span
+$$</span> 矩阵形式为： <span class="math display">$$
+\begin{bmatrix}
+Y' \\[6pt]
+P_B \\[6pt]
+P_R
+\end{bmatrix}
+=
+\begin{bmatrix}
+0.299 &amp; 0.587 &amp; 0.114 \\
+-0.168736 &amp; -0.331264 &amp; 0.5 \\
+0.5 &amp; -0.418688 &amp; -0.081312
+\end{bmatrix}
+\begin{bmatrix}
+R' \\[6pt]
+G' \\[6pt]
+B'
+\end{bmatrix}
+$$</span></p>
+<h4 id="逆变换">逆变换</h4>
+<p><strong>模拟信号YUV转RGB</strong> <span class="math display">$$
+\begin{bmatrix}
+R'\\ G'\\ B'
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 &amp; 0 &amp; 1.402\\
+1 &amp; -0.344136 &amp; -0.714136\\
+1 &amp; 1.772 &amp; 0
+\end{bmatrix}
+\begin{bmatrix}
+Y'\\ P_B\\ P_R
+\end{bmatrix}
+$$</span></p>
+<p><strong>模拟 R′G′B′转数字 Y′CbCr（每分量 8 位）：</strong> <span
 class="math display">$$
 \begin{aligned}
 Y'  &amp;= 16 + \bigl(65.481\,R' + 128.553\,G' + 24.966\,B'\bigr),\\
 C_B &amp;= 128 + \bigl(-37.797\,R' - 74.203\,G' + 112.0\,B'\bigr),\\
 C_R &amp;= 128 + \bigl(112.0\,R' - 93.786\,G' - 18.214\,B'\bigr).
 \end{aligned}
-$$</span> 此种 Y′CbCr 形式主要用于较早的标清电视系统，其所用 RGB
-模型贴合老式 CRT 荧光粉的发光特性。</p>
+$$</span> 矩阵形式（带偏置项）：</p>
+<p><span class="math display">$$
+\begin{bmatrix}
+Y' \\[6pt]
+C_B \\[6pt]
+C_R
+\end{bmatrix}
+=
+\begin{bmatrix}
+65.481 &amp; 128.553 &amp; 24.966 \\
+-37.797 &amp; -74.203 &amp; 112.0 \\
+112.0 &amp; -93.786 &amp; -18.214
+\end{bmatrix}
+\begin{bmatrix}
+R' \\[6pt]
+G' \\[6pt]
+B'
+\end{bmatrix}
++
+\begin{bmatrix}
+16 \\[6pt]
+128 \\[6pt]
+128
+\end{bmatrix}
+$$</span></p>
+<p>此种 Y′CbCr 形式主要用于较早的标清电视系统，其所用 RGB 模型贴合老式
+CRT 荧光粉的发光特性。</p>
 <h3 id="itu-r-bt.709-转换">ITU-R BT.709 转换</h3>
-<p><strong>ITU-R BT.709</strong> 标准为 <strong>HDTV</strong>
-主要指定了另一种形式的
-<strong>Y′CbCr</strong>。这种较新的形式也用于一些面向计算机显示的应用，在
-BT.709 中，常数 <span
-class="math inline"><em>K</em><sub><em>b</em></sub></span> 与 <span
-class="math inline"><em>K</em><sub><em>r</em></sub></span>
-的取值不同，但使用它们的公式相同。对 BT.709，有： <span
+<p>ITU-R
+BT.709标准为HDTV主要指定了另一种形式的Y′CbCr。这种较新的形式也用于一些面向计算机显示的应用，在BT.709中，常数
+<span class="math inline"><em>K</em><sub><em>b</em></sub></span> 与
+<span class="math inline"><em>K</em><sub><em>r</em></sub></span>
+的取值不同，但使用它们的公式相同。对BT.709，有： <span
 class="math display"><em>K</em><sub><em>B</em></sub> = 0.0722,  <em>K</em><sub><em>R</em></sub> = 0.2126,  <em>K</em><sub><em>G</em></sub> = 1 − <em>K</em><sub><em>B</em></sub> − <em>K</em><sub><em>R</em></sub> = 0.7152.</span>
-这种 Y′CbCr 形式所基于的 RGB 模型更贴合较新 CRT
-及其他现代显示设备的荧光粉发光特性（需要引文）。BT.709 的转换矩阵为：
-<span class="math display">$$
+这种 Y′CbCr
+形式所基于的RGB模型更贴合较新CRT及其他现代显示设备的荧光粉发光特性。</p>
+<h4 id="rgb转yuv-1">RGB转YUV</h4>
+<p><strong>模拟R′G′B′转模拟 YPbPr：</strong> <span
+class="math display">$$
 \begin{bmatrix}
 Y'\\ C_B\\ C_R
 \end{bmatrix}
 =
 \begin{bmatrix}
 0.2126 &amp; 0.7152 &amp; 0.0722\\
--0.1146 &amp; -0.3854 &amp; 0.5\\
-0.5 &amp; -0.4542 &amp; -0.0458
+-0.09991 &amp; -0.33609 &amp; 0.436\\
+0.615 &amp; -0.55861 &amp; -0.05639
 \end{bmatrix} \\
 \begin{bmatrix}
 R'\\ G'\\ B'
 \end{bmatrix}
-$$</span> 逆变换： <span class="math display">$$
-\begin{bmatrix}
-R'\\ G'\\ B'
-\end{bmatrix}
+$$</span></p>
+<h4 id="逆变化">逆变化</h4>
+<p><strong>模拟YPbPr转模拟 R′G′B′</strong> <span class="math display">$$
+\begin{bmatrix}R'\\G'\\B'\end{bmatrix}
 =
 \begin{bmatrix}
-1 &amp; 0 &amp; 1.5748\\
-1 &amp; -0.1873 &amp; -0.4681\\
-1 &amp; 1.8556 &amp; 0
+1 &amp; 0        &amp; 1.5748 \\
+1 &amp; -0.21482  &amp; -0.38059 \\
+1 &amp; 2.12798   &amp; 0
 \end{bmatrix}
-\begin{bmatrix}
-Y'\\ C_B\\ C_R
-\end{bmatrix}
+\begin{bmatrix}Y'\\C_B\\C_R\end{bmatrix}  
 $$</span></p>
-<p>另外，<strong>R′、G′、B′ 的定义</strong>在 BT.709 与 BT.601
-之间是不同的；</p>
-<h3 id="打包格式">打包格式</h3>
+<h3 id="打包格式-1">打包格式</h3>
 <p>RGB文件通常以每像素 8、12、16 或 24
 位进行编码。下面的示例我们假定每个像素24bits，记作
-RGB888。标准的字节顺序很简单： r0, g0, b0, r1, g1, b1, … YCbCr
-的打包像素格式往往被称为“YUV”。这类文件可以用 每像素 12、16 或 24
-位编码。根据色度抽样不同，大致可描述为 4:2:0p、4:2:2、4:4:4。Y
+RGB888。标准的字节顺序很简单： r0, g0, b0, r1, g1, b1, …</p>
+<p>YCbCr 的打包像素格式往往被称为“YUV”。这类文件可以用 每像素 12、16 或
+24 位编码。根据色度抽样不同，大致可描述为 4:2:0p、4:2:2、4:4:4。Y
 后面的撇号（′）常被省略，YUV420p 里的
 p（planar，平面）也常被省略。就实际文件格式而言，4:2:0
 最常见，因为数据量更小，文件扩展名通常为
 “.YUV”。数据率与抽样（A:B:C）之间的关系由 Y 与 U/V 通道采样数之比定义。
-从 RGB 到 YUV 或相反方向转换，最简单是使用 RGB888 与 4:4:4。对于
-4:1:1、4:2:2、4:2:0，需要先转换/重建到 4:4:4 再处理。</p>
+从 RGB 到 YUV
+或相反方向转换，最简单是使用RGB888与4:4:4。对于4:1:1、4:2:2、4:2:0，需要先转换/重建到
+4:4:4 再处理。</p>
 <p><strong>4:4:4</strong></p>
 <p>4:4:4
 很直接，因为不分组像素；差别只在于每个通道分配多少位以及字节排列方式。基础的
 YUV3 方案每像素用 3 字节，顺序为： y0, u0, v0, y1, u1, v1, … （这里用 u
-代表 Cb、v 代表 Cr；以下相同。） 在计算机中更常见 AYUV，即增加一个 Alpha
-通道，顺序为： a0, y0, u0, v0, a1, y1, u1, v1, … 这样每组 32
-位，更便于处理。</p>
+代表 Cb、v 代表 Cr；以下相同。）</p>
 <p><strong>4:1:1</strong></p>
 <p>4:1:1 较少使用。像素按每 4 个水平分组。</p>
 <p><strong>4:2:0</strong></p>
@@ -384,11 +447,14 @@ IMC2、IMC4、YV12、NV12。这些格式都是平面型（planar），即把 Y�
 NV12：可能是最常见的 8-bit 4:2:0 格式；Android
 相机预览的默认格式。先写完整 Y 平面，然后写交织的色度行：U0, V0, U1, V1,
 … - I420：更简单、也更常用。先写完整 Y 平面，再写完整 U 平面，最后写完整
-V 平面。 <img src="/images/yuv420.svg.png" alt="yuv420" width="720"> -
-IMC2：先写完整的 Y 图；色度每行按 V0…Vn, U0…Un 排列，其中 n
-为该行的色度采样数（等于 Y 宽度的一半）。 - IMC4：与 IMC2
-类似，但色度行顺序为 U0…Un, V0…Vn。 - YV12：与 I420 相同，只是 U/V
-平面的顺序对调。</p>
+V 平面。</p>
+<p><img src="/images/yuv420.svg.png" alt="yuv420" width="720"></p>
+<ul>
+<li><p>IMC2：先写完整的 Y 图；色度每行按 V0…Vn, U0…Un 排列，其中 n
+为该行的色度采样数（等于 Y 宽度的一半）。</p></li>
+<li><p>IMC4：与 IMC2 类似，但色度行顺序为 U0…Un, V0…Vn。</p></li>
+<li><p>YV12：与 I420 相同，只是 U/V 平面的顺序对调。</p></li>
+</ul>
 <h1 id="hsl和hsv色彩模型">HSL和HSV色彩模型</h1>
 <p>HSL 和 HSV 是在 RGB
 色彩模型中用来表示颜色点的两种最常见的圆柱坐标表示。与笛卡尔（立方体）表示相比，这两种表示通过重新组织
@@ -398,17 +464,17 @@ HSL 代表
 Hue（色相）、Saturation（饱和度）、Lightness（明度），也常被写作 HLS。
 HSV 代表 Hue（色相）、Saturation（饱和度）、Value（值），也常被称为
 HSB（其中 B 指 Brightness，亮度）。 第三种在计算机视觉中常见的模型是
-HSI，即 Hue（色相）、Saturation（饱和度）、Intensity（强度）。
-<img src="/images/color_hsl_hsv_models.svg.png" alt="hsl_hsv" width="720">
-在这两种“圆柱体”模型中，绕中央垂直轴的角度对应“色相（hue）”，离轴心的距离对应“饱和度（saturation）”，沿轴向的位置对应“明度（lightness）”“值（value）或“亮度（brightness）”。需要注意的是，虽然
+HSI，即 Hue（色相）、Saturation（饱和度）、Intensity（强度）。</p>
+<p><img src="/images/color_hsl_hsv_models.svg.png" alt="hsl_hsv" width="720"></p>
+<p>在这两种“圆柱体”模型中，绕中央垂直轴的角度对应“色相（hue）”，离轴心的距离对应“饱和度（saturation）”，沿轴向的位置对应“明度（lightness）”“值（value）或“亮度（brightness）”。需要注意的是，虽然
 HSL 与 HSV
 中的“色相”指的是同一属性，但它们对“饱和度”的定义差异很大。由于 HSL 与
 HSV 都是对设备依赖的 RGB
 模型做的简单变换，它们所定义的物理颜色取决于设备或特定 RGB
 空间中红、绿、蓝三原色的具体颜色，以及用于表示这些原色分量大小的伽马校正。因此，每一台
 RGB 设备都有其独特的 HSL 与 HSV 空间；相同的 HSL/HSV 数值在不同的基准
-RGB 空间中会表示不同的颜色。[1]
-在这两种圆柱体几何中，围绕中央垂直轴的角度对应色相（hue）：从 0°
+RGB 空间中会表示不同的颜色。</p>
+<p>在这两种圆柱体几何中，围绕中央垂直轴的角度对应色相（hue）：从 0°
 的红原色出发，经过 120° 的绿原色与 240° 的蓝原色，最后在 360°
 回到红。两种几何的中轴都由中性、无彩或灰色组成：自上而下从 亮度 1（或值
 1）的白到 亮度 0（或值 0）的黑。
@@ -418,6 +484,75 @@ RGB 空间中会表示不同的颜色。[1]
 shade，加黑）时，饱和度不变。在 HSL
 中，与白混合（tint，加白）时饱和度也不变；只有同时与黑和白混合（tone，加灰）时，饱和度才会小于
 1。而在 HSV 中，仅加白就会降低饱和度。</p>
+<p>另外可以观察到，在HSL中他最顶部的整个区域都是白色、最底部整个区域都是黑色。HSV中最底部都是黑色。所以为了方便认为调色，它们还有另外一种表示方式：用双圆锥型表示HSL，用单圆锥表示HSV模型。</p>
+<div class="img-row">
+<p><img src="/images/color_hsl_cone.png" alt="hsl_cone" width="260">
+<img src="/images/color_hsv_cone.png" alt="hsv_cone" width="260"></p>
+</div>
+<h2 id="色彩模型转换">色彩模型转换</h2>
+<h3 id="rgb转hsl">RGB转HSL</h3>
+<p><span class="math display">$$
+\begin{aligned}
+&amp;\textbf{归一化:}\quad
+r=\frac{R}{255},\quad g=\frac{G}{255},\quad b=\frac{B}{255} \\[4pt]
+&amp;\textbf{极值与差值:}\quad
+C_{\max}=\max(r,g,b),\quad
+C_{\min}=\min(r,g,b),\quad
+\Delta=C_{\max}-C_{\min} \\[6pt]
+&amp;\textbf{Lightness:}\quad
+L=\frac{C_{\max}+C_{\min}}{2} \\[6pt]
+&amp;\textbf{Saturation:}\quad
+S=\begin{cases}
+0, &amp; \Delta=0 \\[6pt]
+\dfrac{\Delta}{1-\lvert 2L-1\rvert}, &amp; \Delta\neq 0
+\end{cases} \\[10pt]
+&amp;\textbf{Hue:}\quad
+H=
+\begin{cases}
+0, &amp; \Delta=0 \\[6pt]
+60^\circ\!\times\!\big((\tfrac{g-b}{\Delta})\bmod 6\big), &amp;
+C_{\max}=r \\[8pt]
+60^\circ\!\times\!\big(\tfrac{b-r}{\Delta}+2\big), &amp; C_{\max}=g
+\\[8pt]
+60^\circ\!\times\!\big(\tfrac{r-g}{\Delta}+4\big), &amp; C_{\max}=b
+\end{cases}
+\end{aligned}
+$$</span></p>
+<h3 id="rgb转hsv">RGB转HSV</h3>
+<p><strong>先将RGB（假设8bit）归一化。</strong> <span
+class="math display">$$
+\begin{aligned}
+&amp;\text{归一化：}\quad
+r=\frac{R}{255},\quad g=\frac{G}{255},\quad b=\frac{B}{255} \\[4pt]
+&amp;\text{极值与差值：}\quad
+C_{\max}=\max(r,g,b),\;
+C_{\min}=\min(r,g,b),\;
+\Delta=C_{\max}-C_{\min}
+\end{aligned}
+$$</span></p>
+<p><strong>Hue（色相）：</strong></p>
+<p><span class="math display">$$
+H=
+\begin{cases}
+0, &amp; \Delta=0 \\[6pt]
+60^\circ\!\times\!\big((\frac{g-b}{\Delta})\bmod 6\big), &amp;
+C_{\max}=r \\[8pt]
+60^\circ\!\times\!\Big(\frac{b-r}{\Delta}+2\Big), &amp; C_{\max}=g
+\\[8pt]
+60^\circ\!\times\!\Big(\frac{r-g}{\Delta}+4\Big), &amp; C_{\max}=b
+\end{cases}
+$$</span></p>
+<p><strong>Saturation（饱和度）：</strong></p>
+<p><span class="math display">$$
+S=
+\begin{cases}
+0, &amp; C_{\max}=0 \\[6pt]
+\dfrac{\Delta}{C_{\max}}, &amp; C_{\max}\neq 0
+\end{cases}
+$$</span></p>
+<p><strong>Value（明度）：</strong></p>
+<p><span
+class="math display"><em>V</em> = <em>C</em><sub>max</sub>.</span></p>
 
       
     </div>
