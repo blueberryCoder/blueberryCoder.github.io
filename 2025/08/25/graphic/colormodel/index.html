@@ -19,13 +19,33 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blueberrycoder.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.24.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="前言 色彩模型（color model）是用一组数组（每个颜色用3个或4个数字来表示）来描述颜色的数学模型。此文就来介绍一下常见的一些色彩模型。 RGB色彩模型 RGB色彩模型是由红(R)、绿(G)、蓝(B)组成的一种加法颜色模型。它是我们在电视机、计算机中种常用的颜色模型。RGB色彩模型是一种设备依赖(device-dependent)的色彩模型，不同的设备因为厂商有不同的物理实现（比如：使用不">
+    <meta name="description" content="光谱 1666年牛顿发现太阳光经三棱镜的折射后可呈现彩色光，称为光的色散现象。  由牛顿的色散实验结果，可知白光是由多种颜色的光所组成。太阳光呈现白色，当它通过三棱镜折射后，将形成由红、橙、黄、绿、蓝、靛、紫（或红、橙、黄、绿、青、蓝、紫）顺次连续分布的彩色光谱，覆盖了大约在390到770纳米的可见光区。  SPD(谱功率密度) 可以用谱功率密度（Spectral Power Distributi">
 <meta property="og:type" content="article">
 <meta property="og:title" content="色彩模型">
 <meta property="og:url" content="https://blueberrycoder.github.io/2025/08/25/graphic/colormodel/index.html">
 <meta property="og:site_name" content="Keep learning">
-<meta property="og:description" content="前言 色彩模型（color model）是用一组数组（每个颜色用3个或4个数字来表示）来描述颜色的数学模型。此文就来介绍一下常见的一些色彩模型。 RGB色彩模型 RGB色彩模型是由红(R)、绿(G)、蓝(B)组成的一种加法颜色模型。它是我们在电视机、计算机中种常用的颜色模型。RGB色彩模型是一种设备依赖(device-dependent)的色彩模型，不同的设备因为厂商有不同的物理实现（比如：使用不">
+<meta property="og:description" content="光谱 1666年牛顿发现太阳光经三棱镜的折射后可呈现彩色光，称为光的色散现象。  由牛顿的色散实验结果，可知白光是由多种颜色的光所组成。太阳光呈现白色，当它通过三棱镜折射后，将形成由红、橙、黄、绿、蓝、靛、紫（或红、橙、黄、绿、青、蓝、紫）顺次连续分布的彩色光谱，覆盖了大约在390到770纳米的可见光区。  SPD(谱功率密度) 可以用谱功率密度（Spectral Power Distributi">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_newton.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_spectrum.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_eg_spd.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_spd2.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_spd_linear.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_eye.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_eye_cones.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_cone_resp.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_cones_distribute.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_spd_cones.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_metamerism.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_sunlight.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_rgb_additive.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_cie_primary.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_cie_rgb.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_cie_xyz.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_cie_gamut.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_gamut.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_eg_relative0.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/color_eg_relative1.png">
 <meta property="og:image" content="https://blueberrycoder.github.io/images/color_model_rgb.png">
 <meta property="og:image" content="https://blueberrycoder.github.io/images/color_cone_cell_resp.png">
 <meta property="og:image" content="https://blueberrycoder.github.io/images/color_srgb.png">
@@ -37,11 +57,11 @@
 <meta property="og:image" content="https://blueberrycoder.github.io/images/color_hsl_cone.png">
 <meta property="og:image" content="https://blueberrycoder.github.io/images/color_hsv_cone.png">
 <meta property="article:published_time" content="2025-08-25T12:02:24.000Z">
-<meta property="article:modified_time" content="2025-08-30T06:12:21.905Z">
+<meta property="article:modified_time" content="2025-08-31T13:29:54.895Z">
 <meta property="article:author" content="blueberry">
 <meta property="article:tag" content="graphic">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://blueberrycoder.github.io/images/color_model_rgb.png">
+<meta name="twitter:image" content="https://blueberrycoder.github.io/images/color_newton.png">
 
 
 <link rel="canonical" href="https://blueberrycoder.github.io/2025/08/25/graphic/colormodel/">
@@ -145,7 +165,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rgb%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">RGB色彩模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E6%B3%95%E9%A2%9C%E8%89%B2%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.1.</span> <span class="nav-text">加法颜色模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rgb%E8%AE%BE%E5%A4%87"><span class="nav-number">2.2.</span> <span class="nav-text">RGB设备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.2.1.</span> <span class="nav-text">打包格式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%A0%E4%BD%95%E8%A1%A8%E7%A4%BA"><span class="nav-number">2.3.</span> <span class="nav-text">几何表示</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#yuv%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">YUV色彩模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8Ergb%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.1.</span> <span class="nav-text">与RGB的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#itu-r-bt.601-%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.1.1.</span> <span class="nav-text">ITU-R BT.601 转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rgb%E8%BD%ACyuv"><span class="nav-number">3.1.1.1.</span> <span class="nav-text">RGB转YUV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%86%E5%8F%98%E6%8D%A2"><span class="nav-number">3.1.1.2.</span> <span class="nav-text">逆变换</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#itu-r-bt.709-%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.1.2.</span> <span class="nav-text">ITU-R BT.709 转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rgb%E8%BD%ACyuv-1"><span class="nav-number">3.1.2.1.</span> <span class="nav-text">RGB转YUV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%86%E5%8F%98%E5%8C%96"><span class="nav-number">3.1.2.2.</span> <span class="nav-text">逆变化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E6%A0%BC%E5%BC%8F-1"><span class="nav-number">3.1.3.</span> <span class="nav-text">打包格式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hsl%E5%92%8Chsv%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">HSL和HSV色彩模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-number">4.1.</span> <span class="nav-text">色彩模型转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rgb%E8%BD%AChsl"><span class="nav-number">4.1.1.</span> <span class="nav-text">RGB转HSL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rgb%E8%BD%AChsv"><span class="nav-number">4.1.2.</span> <span class="nav-text">RGB转HSV</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%89%E8%B0%B1"><span class="nav-number">1.</span> <span class="nav-text">光谱</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#spd%E8%B0%B1%E5%8A%9F%E7%8E%87%E5%AF%86%E5%BA%A6"><span class="nav-number">1.1.</span> <span class="nav-text">SPD(谱功率密度)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E6%80%A7%E8%B4%A8"><span class="nav-number">1.2.</span> <span class="nav-text">线性性质</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%A2%9C%E8%89%B2"><span class="nav-number">2.</span> <span class="nav-text">什么是颜色？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%BA%E7%9C%BC%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">人眼的结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E8%89%B2%E7%90%86%E8%AE%BA"><span class="nav-number">3.</span> <span class="nav-text">三色理论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E8%89%B2%E5%BC%82%E8%B0%B1"><span class="nav-number">3.1.</span> <span class="nav-text">同色异谱</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A0%E8%89%B2%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">加色模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#cie-rgb%E5%8C%B9%E9%85%8D%E5%87%BD%E6%95%B0"><span class="nav-number">4.1.</span> <span class="nav-text">CIE RGB匹配函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%9C%E8%89%B2%E7%A9%BA%E9%97%B4"><span class="nav-number">5.</span> <span class="nav-text">颜色空间</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cie-xyz"><span class="nav-number">6.</span> <span class="nav-text">CIE XYZ</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%89%B2%E5%9F%9F"><span class="nav-number">6.1.</span> <span class="nav-text">色域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%9C%E8%89%B2%E6%98%AF%E7%9B%B8%E5%AF%B9%E7%9A%84"><span class="nav-number">6.2.</span> <span class="nav-text">颜色是相对的</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rgb%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">7.</span> <span class="nav-text">RGB色彩模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E6%B3%95%E9%A2%9C%E8%89%B2%E6%A8%A1%E5%9E%8B"><span class="nav-number">7.1.</span> <span class="nav-text">加法颜色模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rgb%E8%AE%BE%E5%A4%87"><span class="nav-number">7.2.</span> <span class="nav-text">RGB设备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E6%A0%BC%E5%BC%8F"><span class="nav-number">7.2.1.</span> <span class="nav-text">打包格式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%A0%E4%BD%95%E8%A1%A8%E7%A4%BA"><span class="nav-number">7.3.</span> <span class="nav-text">几何表示</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#yuv%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">8.</span> <span class="nav-text">YUV色彩模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8Ergb%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-number">8.1.</span> <span class="nav-text">与RGB的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#itu-r-bt.601-%E8%BD%AC%E6%8D%A2"><span class="nav-number">8.1.1.</span> <span class="nav-text">ITU-R BT.601 转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rgb%E8%BD%ACyuv"><span class="nav-number">8.1.1.1.</span> <span class="nav-text">RGB转YUV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%86%E5%8F%98%E6%8D%A2"><span class="nav-number">8.1.1.2.</span> <span class="nav-text">逆变换</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#itu-r-bt.709-%E8%BD%AC%E6%8D%A2"><span class="nav-number">8.1.2.</span> <span class="nav-text">ITU-R BT.709 转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rgb%E8%BD%ACyuv-1"><span class="nav-number">8.1.2.1.</span> <span class="nav-text">RGB转YUV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%86%E5%8F%98%E5%8C%96"><span class="nav-number">8.1.2.2.</span> <span class="nav-text">逆变化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E6%A0%BC%E5%BC%8F-1"><span class="nav-number">8.1.3.</span> <span class="nav-text">打包格式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hsl%E5%92%8Chsv%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">9.</span> <span class="nav-text">HSL和HSV色彩模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-number">9.1.</span> <span class="nav-text">色彩模型转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rgb%E8%BD%AChsl"><span class="nav-number">9.1.1.</span> <span class="nav-text">RGB转HSL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rgb%E8%BD%AChsv"><span class="nav-number">9.1.2.</span> <span class="nav-text">RGB转HSV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E4%BB%A3%E7%A0%81"><span class="nav-number">9.1.3.</span> <span class="nav-text">转换代码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rgb%E8%BD%AChsv-1"><span class="nav-number">9.1.3.1.</span> <span class="nav-text">rgb转hsv</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rgb%E8%BD%AChls"><span class="nav-number">9.1.3.2.</span> <span class="nav-text">rgb转hls</span></a></li></ol></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -231,7 +251,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-08-30 14:12:21" itemprop="dateModified" datetime="2025-08-30T14:12:21+08:00">2025-08-30</time>
+      <time title="Modified: 2025-08-31 21:29:54" itemprop="dateModified" datetime="2025-08-31T21:29:54+08:00">2025-08-31</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -252,9 +272,73 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="前言">前言</h1>
+    <div class="post-body" itemprop="articleBody"><h1 id="光谱">光谱</h1>
+<p>1666年牛顿发现太阳光经三棱镜的折射后可呈现彩色光，称为光的色散现象。</p>
+<p><img src="/images/color_newton.png" alt="newton" width="600">
+由牛顿的色散实验结果，可知白光是由多种颜色的光所组成。太阳光呈现白色，当它通过三棱镜折射后，将形成由红、橙、黄、绿、蓝、靛、紫（或红、橙、黄、绿、青、蓝、紫）顺次连续分布的彩色光谱，覆盖了大约在390到770纳米的可见光区。</p>
+<p><img src="/images/color_spectrum.png" alt="spd" width="600"></p>
+<h2 id="spd谱功率密度">SPD(谱功率密度)</h2>
+<p>可以用谱功率密度（Spectral Power Distribution
+(SPD)）用来描述光，用来描述光在不同波长之间的能量，它的单位是辐射度单位/波长，例如(watts/nm)。
+比如下面这幅图中，太阳部分光线的SPD和蓝天部分的SPD如下：</p>
+<p><img src="/images/color_eg_spd.png" alt="spd" width="600">
+再如下图，不同光的不同的SPD:
+<img src="/images/color_spd2.png" alt="spd" width="600"></p>
+<h2 id="线性性质">线性性质</h2>
+<p>SPD具有线性性质，比如蓝色和黄色的光加起来得到的SPD，就是蓝色和黄色分别得SPD相加。
+<img src="/images/color_spd_linear.png" alt="spd" width="600"></p>
+<h1 id="什么是颜色">什么是颜色？</h1>
+<p>颜色是人眼感知得到的，它并不是光的一种物理属性。不同波长的光也不是颜色。</p>
+<h2 id="人眼的结构">人眼的结构</h2>
+<p>颜色的结构类似一个摄像机，光线通过晶状体聚焦子视网膜上，视网膜再将收到的光信号转化为发送给大脑的电信号。</p>
+<p><img src="/images/color_eye.png" alt="spd" width="600">
+人眼有大约1200万的视干细胞，它们能给大脑提供亮度信息，600～700万左右的视锥细胞，它们能给大脑提供颜色信息。（从这个数量上我们也能看出来，人眼对亮度信息更敏感）。</p>
+<p><img src="/images/color_eye_cones.png" alt="spd" width="600">
+视锥细胞也可以分为三种：S型、M型、L型，它们对不同波长的响应强度如下：
+<img src="/images/color_cone_resp.png" alt="spd" width="600">
+下图是从12给不同人中统计的视觉细胞的类型分布，注意不同类型视锥细胞的比例存在高度差异。这也就是说，不同的人感知到的颜色其实是有很大差异的（每个人的看到的世界是不一样的🐶）。
+<img src="/images/color_cones_distribute.png" alt="spd" width="600"></p>
+<h1 id="三色理论">三色理论</h1>
+<p>了解以上理论支持，人们就可以用一种数学模型来描述人眼对光的感知。人眼感知到的光的能量等于人眼的三种细胞对不同波长的强度乘以光源的SPD中不同波长的强度然后相加，可以用如下数学公式描述：</p>
+<p><img src="/images/color_spd_cones.png" alt="spd" width="600"></p>
+<h2 id="同色异谱">同色异谱</h2>
+<p>有以上积分的定义，我们可以得出对于人眼感知到的颜色，光源其实可以拥有不同的频谱。（只要保证最后积分和的结果是一致的就行）。
+如下图中，不同的频谱，其实最终人眼感知到的能量是一样的。
+<img src="/images/color_metamerism.png" alt="spd" width="600">
+下图中2个太阳的频谱虽然不同，但是最终人眼感知到的是一样的。
+<img src="/images/color_sunlight.png" alt="spd" width="600"></p>
+<h1 id="加色模型">加色模型</h1>
+<p>如图，我们可以用三个信号，它们的SPD分别为：sR(λ), sG(λ),
+sB(λ)来表示三种原始光，我们分别调节不同原始光的强度就可以得到不同的颜色。最终的到的颜色为：R
+sR(λ) + G sG(λ) + B sB(λ)， R,G,B代表它们的强度。</p>
+<p><img src="/images/color_rgb_additive.png" alt="spd" width="600"></p>
+<h2 id="cie-rgb匹配函数">CIE RGB匹配函数</h2>
+<p>CIE通过用以下3个原色的光做实验，得到一个颜色匹配函数。
+<img src="/images/color_cie_primary.png" alt="spd" width="600">
+颜色匹配函数如下，对于任意的频谱，人眼感知到到的颜色能通过这个函数的到人眼感知到的颜色（定义在CIE
+RGB中的颜色）
+<img src="/images/color_cie_rgb.png" alt="spd" width="600">
+（匹配函数中，有负数的情况，这种可以在实验时向目标色加一个红色强度的光来实现，即实现了对原色的减法）</p>
+<h1 id="颜色空间">颜色空间</h1>
 <p>色彩模型（color
-model）是用一组数组（每个颜色用3个或4个数字来表示）来描述颜色的数学模型。此文就来介绍一下常见的一些色彩模型。</p>
+model）是用一组数组（每个颜色用3个或4个数字来表示）来描述颜色的数学模型。</p>
+<h1 id="cie-xyz">CIE XYZ</h1>
+<p>CIE
+XYZ中定义的X、Y、Z是并不存在的颜色。其中Y是表示的亮度(luminance)，另外2个是颜色相关的虚拟量。这个定义消除了负数的情况。
+<img src="/images/color_cie_xyz.png" alt="spd" width="600"></p>
+<h2 id="色域">色域</h2>
+<p>为了让我们更好的理解CIE
+XYZ，通过一下数据手段将三维的颜色空间显示在了二维平面。人眼能看见的颜色就是下图的这个马蹄形状。
+它通过统一亮度Y，然后对X、Y、Z归一化，然后痛殴下面的数学公式的到x,y,z，因为x+y+z
+= 1 所以我们可以在二维平面呈现这个颜色空间。
+<img src="/images/color_cie_gamut.png" alt="spd" width="720"></p>
+<p>下图是一些常见的绝对色彩空间的色域图：</p>
+<p><img src="/images/color_gamut.png" alt="spd" width="720"></p>
+<h2 id="颜色是相对的">颜色是相对的</h2>
+<p>观察下面的图：
+<img src="/images/color_eg_relative0.png" alt="spd" width="720"></p>
+<p><img src="/images/color_eg_relative1.png" alt="spd" width="720">
+你能看出黄色是一直的吗？（你的大脑一直在欺骗你🐶）</p>
 <h1 id="rgb色彩模型">RGB色彩模型</h1>
 <p>RGB色彩模型是由红(R)、绿(G)、蓝(B)组成的一种加法颜色模型。它是我们在电视机、计算机中种常用的颜色模型。RGB色彩模型是一种设备依赖(device-dependent)的色彩模型，不同的设备因为厂商有不同的物理实现（比如：使用不同的荧光粉、不同的染料），所提供的红、绿、蓝的实现等级不一样，甚至同一台设备随着时间推移老化提供出的颜色也不是不一样的。所以如果没有色彩管理(color
 management)，不同的设备将不能提供出一致的颜色。</p>
@@ -570,6 +654,11 @@ $$</span></p>
 <p><strong>Value（明度）：</strong></p>
 <p><span
 class="math display"><em>V</em> = <em>C</em><sub>max</sub>.</span></p>
+<h3 id="转换代码">转换代码</h3>
+<h4 id="rgb转hsv-1">rgb转hsv</h4>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">vec3</span> rgb2hsv(<span class="type">vec3</span> c)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">vec4</span> K = <span class="type">vec4</span>(<span class="number">0.0</span>, <span class="number">-1.0</span>/<span class="number">3.0</span>, <span class="number">2.0</span>/<span class="number">3.0</span>, <span class="number">-1.0</span>);</span><br><span class="line">    <span class="type">vec4</span> p = <span class="built_in">mix</span>(<span class="type">vec4</span>(c.bg, K.wz), <span class="type">vec4</span>(c.gb, K.xy), <span class="built_in">step</span>(c.b, c.g));</span><br><span class="line">    <span class="type">vec4</span> q = <span class="built_in">mix</span>(<span class="type">vec4</span>(p.xyw, c.r), <span class="type">vec4</span>(c.r, p.yzx), <span class="built_in">step</span>(p.x, c.r));</span><br><span class="line">    <span class="type">float</span> d = q.x - <span class="built_in">min</span>(q.w, q.y);</span><br><span class="line">    <span class="type">float</span> e = <span class="number">1.0e-10</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="type">vec3</span>(<span class="built_in">abs</span>(q.z + (q.w - q.y) / (<span class="number">6.0</span> * d + e)), d / (q.x + e), q.x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">vec3</span> hsv2rgb(<span class="type">vec3</span> c)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">vec4</span> K = <span class="type">vec4</span>(<span class="number">1.0</span>, <span class="number">2.0</span>/<span class="number">3.0</span>, <span class="number">1.0</span>/<span class="number">3.0</span>, <span class="number">3.0</span>);</span><br><span class="line">    <span class="type">vec3</span> p = <span class="built_in">abs</span>(<span class="built_in">fract</span>(c.xxx + K.xyz) * <span class="number">6.0</span> - K.www);</span><br><span class="line">    <span class="keyword">return</span> c.z * <span class="built_in">mix</span>(K.xxx, <span class="built_in">clamp</span>(p - K.xxx, <span class="number">0.0</span>, <span class="number">1.0</span>), c.y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="rgb转hls">rgb转hls</h4>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">vec3</span> rgb2hls(<span class="type">vec3</span> c)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">vec4</span> K = <span class="type">vec4</span>(<span class="number">0.0</span>, <span class="number">-1.0</span>/<span class="number">3.0</span>, <span class="number">2.0</span>/<span class="number">3.0</span>, <span class="number">-1.0</span>);</span><br><span class="line">    <span class="type">vec4</span> p = <span class="built_in">mix</span>(<span class="type">vec4</span>(c.bg, K.wz), <span class="type">vec4</span>(c.gb, K.xy), <span class="built_in">step</span>(c.b, c.g));</span><br><span class="line">    <span class="type">vec4</span> q = <span class="built_in">mix</span>(<span class="type">vec4</span>(p.xyw, c.r), <span class="type">vec4</span>(c.r, p.yzx), <span class="built_in">step</span>(p.x, c.r));</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> Cmax = q.x;</span><br><span class="line">    <span class="type">float</span> Cmin = <span class="built_in">min</span>(q.w, q.y);</span><br><span class="line">    <span class="type">float</span> d    = Cmax - Cmin;           <span class="comment">// Δ (chroma)</span></span><br><span class="line">    <span class="type">float</span> L    = <span class="number">0.5</span> * (Cmax + Cmin);   <span class="comment">// HLS 的 Lightness</span></span><br><span class="line">    <span class="type">float</span> e    = <span class="number">1.0e-10</span>;</span><br><span class="line">    <span class="type">float</span> H = <span class="built_in">abs</span>(q.z + (q.w - q.y) / (<span class="number">6.0</span> * d + e));</span><br><span class="line">    <span class="type">float</span> S = d / (<span class="number">1.0</span> - <span class="built_in">abs</span>(<span class="number">2.0</span> * L - <span class="number">1.0</span>) + e);</span><br><span class="line">    <span class="keyword">return</span> <span class="type">vec3</span>(H, L, S);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">vec3</span> hls2rgb(<span class="type">vec3</span> hls)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">float</span> H = hls.x;</span><br><span class="line">    <span class="type">float</span> L = hls.y;</span><br><span class="line">    <span class="type">float</span> S = hls.z;</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> C = (<span class="number">1.0</span> - <span class="built_in">abs</span>(<span class="number">2.0</span> * L - <span class="number">1.0</span>)) * S;</span><br><span class="line">    <span class="type">vec3</span> t = <span class="built_in">clamp</span>(<span class="built_in">abs</span>(<span class="built_in">mod</span>(H * <span class="number">6.0</span> + <span class="type">vec3</span>(<span class="number">0.0</span>, <span class="number">4.0</span>, <span class="number">2.0</span>), <span class="number">6.0</span>) - <span class="number">3.0</span>) - <span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>);</span><br><span class="line">    <span class="keyword">return</span> L + C * (t - <span class="number">0.5</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
     </div>
 
