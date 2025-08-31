@@ -7,10 +7,90 @@ categories:
 - [graphic]
 mathjax: true
 
-
 ---
-# 前言
-色彩模型（color model）是用一组数组（每个颜色用3个或4个数字来表示）来描述颜色的数学模型。此文就来介绍一下常见的一些色彩模型。
+# 光谱
+1666年牛顿发现太阳光经三棱镜的折射后可呈现彩色光，称为光的色散现象。
+
+<img src="/images/color_newton.png" alt="newton" width="600"> 
+由牛顿的色散实验结果，可知白光是由多种颜色的光所组成。太阳光呈现白色，当它通过三棱镜折射后，将形成由红、橙、黄、绿、蓝、靛、紫（或红、橙、黄、绿、青、蓝、紫）顺次连续分布的彩色光谱，覆盖了大约在390到770纳米的可见光区。
+
+<img src="/images/color_spectrum.png" alt="spd" width="600"> 
+
+## SPD(谱功率密度)
+可以用谱功率密度（Spectral Power Distribution (SPD)）用来描述光，用来描述光在不同波长之间的能量，它的单位是辐射度单位/波长，例如(watts/nm)。
+比如下面这幅图中，太阳部分光线的SPD和蓝天部分的SPD如下：
+
+<img src="/images/color_eg_spd.png" alt="spd" width="600"> 
+再如下图，不同光的不同的SPD:
+<img src="/images/color_spd2.png" alt="spd" width="600"> 
+
+## 线性性质
+SPD具有线性性质，比如蓝色和黄色的光加起来得到的SPD，就是蓝色和黄色分别得SPD相加。
+<img src="/images/color_spd_linear.png" alt="spd" width="600"> 
+
+# 什么是颜色？
+颜色是人眼感知得到的，它并不是光的一种物理属性。不同波长的光也不是颜色。
+
+## 人眼的结构
+颜色的结构类似一个摄像机，光线通过晶状体聚焦子视网膜上，视网膜再将收到的光信号转化为发送给大脑的电信号。
+
+<img src="/images/color_eye.png" alt="spd" width="600"> 
+人眼有大约1200万的视干细胞，它们能给大脑提供亮度信息，600～700万左右的视锥细胞，它们能给大脑提供颜色信息。（从这个数量上我们也能看出来，人眼对亮度信息更敏感）。
+
+<img src="/images/color_eye_cones.png" alt="spd" width="600"> 
+视锥细胞也可以分为三种：S型、M型、L型，它们对不同波长的响应强度如下：
+<img src="/images/color_cone_resp.png" alt="spd" width="600"> 
+下图是从12给不同人中统计的视觉细胞的类型分布，注意不同类型视锥细胞的比例存在高度差异。这也就是说，不同的人感知到的颜色其实是有很大差异的（每个人的看到的世界是不一样的🐶）。
+<img src="/images/color_cones_distribute.png" alt="spd" width="600"> 
+
+# 三色理论
+了解以上理论支持，人们就可以用一种数学模型来描述人眼对光的感知。人眼感知到的光的能量等于人眼的三种细胞对不同波长的强度乘以光源的SPD中不同波长的强度然后相加，可以用如下数学公式描述：
+
+<img src="/images/color_spd_cones.png" alt="spd" width="600"> 
+
+## 同色异谱
+有以上积分的定义，我们可以得出对于人眼感知到的颜色，光源其实可以拥有不同的频谱。（只要保证最后积分和的结果是一致的就行）。
+如下图中，不同的频谱，其实最终人眼感知到的能量是一样的。
+<img src="/images/color_metamerism.png" alt="spd" width="600"> 
+下图中2个太阳的频谱虽然不同，但是最终人眼感知到的是一样的。
+<img src="/images/color_sunlight.png" alt="spd" width="600"> 
+
+# 加色模型
+如图，我们可以用三个信号，它们的SPD分别为：sR(λ), sG(λ), sB(λ)来表示三种原始光，我们分别调节不同原始光的强度就可以得到不同的颜色。最终的到的颜色为：R sR(λ) + G sG(λ) + B sB(λ)， R,G,B代表它们的强度。
+
+<img src="/images/color_rgb_additive.png" alt="spd" width="600"> 
+
+## CIE RGB匹配函数
+
+CIE通过用以下3个原色的光做实验，得到一个颜色匹配函数。
+<img src="/images/color_cie_primary.png" alt="spd" width="600"> 
+颜色匹配函数如下，对于任意的频谱，人眼感知到到的颜色能通过这个函数的到人眼感知到的颜色（定义在CIE RGB中的颜色）
+<img src="/images/color_cie_rgb.png" alt="spd" width="600"> 
+（匹配函数中，有负数的情况，这种可以在实验时向目标色加一个红色强度的光来实现，即实现了对原色的减法）
+
+# 颜色空间
+色彩模型（color model）是用一组数组（每个颜色用3个或4个数字来表示）来描述颜色的数学模型。
+
+# CIE XYZ
+CIE XYZ中定义的X、Y、Z是并不存在的颜色。其中Y是表示的亮度(luminance)，另外2个是颜色相关的虚拟量。这个定义消除了负数的情况。
+<img src="/images/color_cie_xyz.png" alt="spd" width="600"> 
+
+## 色域
+为了让我们更好的理解CIE XYZ，通过一下数据手段将三维的颜色空间显示在了二维平面。人眼能看见的颜色就是下图的这个马蹄形状。
+它通过统一亮度Y，然后对X、Y、Z归一化，然后痛殴下面的数学公式的到x,y,z，因为x+y+z = 1 所以我们可以在二维平面呈现这个颜色空间。
+<img src="/images/color_cie_gamut.png" alt="spd" width="720"> 
+
+下图是一些常见的绝对色彩空间的色域图：
+
+<img src="/images/color_gamut.png" alt="spd" width="720"> 
+
+## 颜色是相对的
+
+观察下面的图：
+<img src="/images/color_eg_relative0.png" alt="spd" width="720"> 
+
+<img src="/images/color_eg_relative1.png" alt="spd" width="720"> 
+你能看出黄色是一直的吗？（你的大脑一直在欺骗你🐶）
 
 # RGB色彩模型
 RGB色彩模型是由红(R)、绿(G)、蓝(B)组成的一种加法颜色模型。它是我们在电视机、计算机中种常用的颜色模型。RGB色彩模型是一种设备依赖(device-dependent)的色彩模型，不同的设备因为厂商有不同的物理实现（比如：使用不同的荧光粉、不同的染料），所提供的红、绿、蓝的实现等级不一样，甚至同一台设备随着时间推移老化提供出的颜色也不是不一样的。所以如果没有色彩管理(color management)，不同的设备将不能提供出一致的颜色。
@@ -318,3 +398,55 @@ $$
 V=C_{\max}.
 $$
 
+### 转换代码
+
+#### rgb转hsv
+```glsl
+vec3 rgb2hsv(vec3 c)
+{
+    vec4 K = vec4(0.0, -1.0/3.0, 2.0/3.0, -1.0);
+    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+    float d = q.x - min(q.w, q.y);
+    float e = 1.0e-10;
+    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+}
+
+vec3 hsv2rgb(vec3 c)
+{
+    vec4 K = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+```
+#### rgb转hls
+```glsl
+vec3 rgb2hls(vec3 c)
+{
+    vec4 K = vec4(0.0, -1.0/3.0, 2.0/3.0, -1.0);
+    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+
+    float Cmax = q.x;
+    float Cmin = min(q.w, q.y);
+    float d    = Cmax - Cmin;           // Δ (chroma)
+    float L    = 0.5 * (Cmax + Cmin);   // HLS 的 Lightness
+    float e    = 1.0e-10;
+    float H = abs(q.z + (q.w - q.y) / (6.0 * d + e));
+    float S = d / (1.0 - abs(2.0 * L - 1.0) + e);
+    return vec3(H, L, S);
+}
+
+vec3 hls2rgb(vec3 hls)
+{
+    float H = hls.x;
+    float L = hls.y;
+    float S = hls.z;
+
+    float C = (1.0 - abs(2.0 * L - 1.0)) * S;
+    vec3 t = clamp(abs(mod(H * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);
+    return L + C * (t - 0.5);
+}
+
+```
