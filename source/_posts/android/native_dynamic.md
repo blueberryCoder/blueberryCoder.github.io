@@ -2,27 +2,30 @@
 title: Android动态链接技术
 date: 2025-09-06 10:43:41
 tags:
+- [code]
+categories:
+- [code]
 ---
 
 
 # 前言
-Android开发中，涉及Native（C/C++等）程序、接入外部动态库、处理线上崩溃、Native Hook、加固、逆向等。都需要了解到动态链接技术。
+Android开发中涉及Native（C/C++等）程序、接入外部动态库、处理线上崩溃、Native Hook、加固、逆向等，都需要了解到动态链接技术。
 
 # 动态库与位置⽆关代码
 
 ## 共享库
-使用一些高级语言（C/C++）最终编译后产物是二进制文件。我们通常引用第三方库，会使用它的动态共享库。同时我们自己开发的二方库本身也可能以来其他的共享库，也可能给别人提供共享库。
+使用一些高级语言（C/C++）最终编译后产物是二进制文件。我们通常引用第三方库，会使用它的动态共享库。同时我们自己开发的二方库本身时也可能以来其他的共享库，也可能给别人提供共享库。
 同时我们为了代码复用，多个Module复用同样的代码时，我们可以将这些代码剥离处理做成一个共享库供其使用。
 <img src="/images/android/native_shared_library.png" alt="shared_library" width="720">
 共享库又分为静态库库和动态共享库。
 
 ## 静态共享库
 静态库是编译时依赖，即编译程序时，会将共享库的内容打包到可执行程序中（假设我们是一个可执行程序，依赖一个共享库）。而静态库不会作为单独的文件和可执行程序发布。
-<img src="/images/android/native_dynamic_shared_library.png" alt="dynamic_shared" width="720">
+<img src="/images/android/native_static_shared_library.png" alt="static_shared" width="720">
 
 ## 动态共享库
-动态库是运行时以来，即编译程序时，不会将共享库的内容打包到可执行程序。发布程序时需要将动态库一起发布。
-<img src="/images/android/native_static_shared_library.png" alt="static_shared" width="720">
+动态库是运行时依赖，即编译程序时，不会将共享库的内容打包到可执行程序。发布程序时需要将动态库一起发布。
+<img src="/images/android/native_dynamic_shared_library.png" alt="dynamic_shared" width="720">
 
 ## 位置无关代码
 因为动态库是要运行时动态加载，其加载位置即运行时地址是不固定的。因此需要保证代码时位置无关的(PIC, Position Idependent Code)。
@@ -66,7 +69,7 @@ Java_com_blueberry_anative_MainActivity_stringFromJNI(
    1dc68:	d65f03c0 	ret
 
 000000000001dc6c <SayHelloWrapper>:
-// 指令地址  机器码       汇编指令                 符号名（可选）
+// 指令地址    机器码           汇编指令                 符号名（可选）
    1dc6c:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
    1dc70:	910003fd 	mov	x29, sp
    1dc74:	14000001 	b	1dc78 <SayHelloWrapper+0xc>
@@ -94,7 +97,7 @@ Java_com_blueberry_anative_MainActivity_stringFromJNI(
 ```asm
 1dca0:	14000002 	b	1dca8 <SayHelloWrapper+0x3c>
 ```
-这条指令对应的汇编语言是跳转到1dca8地址，即当前指令地址+2的位置。虽然反汇编的结果是直接指向这个地址值，但它的指令其实用的是相对偏移。这一点从它的机器码的地位其实可以看出端倪（它的末尾是2）。另外这些指令的地址都是想对地址并不是动态库被加载后的运行时的地址。运行时的真实地址是BASE+这里的相对地址。BASE为加载动态库时系统分配基地址。
+这条指令对应的汇编语言是跳转到1dca8地址，即当前指令地址+2的位置，这里+2的单位是指令长度。虽然反汇编的结果是直接指向这个地址值，但它的指令其实用的是相对偏移。这一点从它的机器码的地位其实可以看出端倪（它的末尾是2）。另外这些指令的地址都是相对地址并不是动态库被加载后的运行时的地址。运行时的真实地址是BASE+这里的相对地址。BASE为加载动态库时系统分配基地址。
 这里的指令集时AArch64指令集，其中b指令的格式为：
 ```
 31  30........5    0
@@ -102,15 +105,13 @@ Java_com_blueberry_anative_MainActivity_stringFromJNI(
 - 高 6 位固定 = 000101 (0x05)
 - 剩下 26 位是带符号偏移量 imm26（相对于当前指令地址，单位是 4 字节）
 ```
-0x14000002的二进制是0001 0100 0000 0000 0000 0000 0000 0010
-opcode = 000101，imm26 = 0x0000002 的偏移量 = 2 * 4 = 8 字节
-也就是跳转的目标地址是距离当前指令地址+8字节的地址，因为当前指令的地址是：1dca0，所有目标地址是：1dca8。
-那么无论这个动态库被加载在什么位置都不影响这个跳转指令的正确性。
+0x14000002的二进制是：`0001 0100 0000 0000 0000 0000 0000 0010`
+这条指令的opcode = 000101，imm26 = 0x0000002的偏移量 = 2 * 4 = 8 字节，也就是跳转的目标地址是距离当前指令地址+8字节的地址，因为当前指令的地址是：1dca0，所有目标地址是：1dca8。那么无论这个动态库被加载在什么位置都不影响这个跳转指令的正确性。
 
 ## 绝对地址跳转
 
 当跨模块调用时，比如我们上面的代码在SayHello中使用了libc的printf函数。编译器在编译期间是无法知道这个函数的地址的，它是怎么保证跳转的正确呢？
-那么我们先来来使用objdump看下SayHello函数的汇编指令：
+那么我们先来使用objdump看下SayHello函数的汇编指令：
 ```asm
 
 000000000001dc50 <SayHello>:
@@ -122,8 +123,8 @@ opcode = 000101，imm26 = 0x0000002 的偏移量 = 2 * 4 = 8 字节
    1dc64:	a8c17bfd 	ldp	x29, x30, [sp], #16
    1dc68:	d65f03c0 	ret
 ```
-其中
-```
+其中：
+```asm
    1dc60:	94009224 	bl	424f0 <printf@plt>  
 ```
 是想跳转到printf函数，它跳转的地址是424f0，对应的符号是printf@plt。
@@ -137,7 +138,7 @@ opcode = 000101，imm26 = 0x0000002 的偏移量 = 2 * 4 = 8 字节
    424fc:	d61f0220 	br	x17
 ...
 ```
-可以看到地址00000000000424f0对应的代码段，它只有4条指令。这段代码通常被称为“蹦床（trampoline"或跳板函数(stbus)。下面我们逐行解释写这段代码。
+可以看到地址00000000000424f0对应的代码段，它只有4条指令。这段代码通常被称为“蹦床（trampoline"或跳板函数(stubs)。下面我们逐行解释写这段代码。
 
 ```asm
 ...
@@ -192,16 +193,16 @@ Contents of section .got.plt:
  470a0 90240400 00000000 90240400 00000000  .$.......$......
 ```
 我们可以看到这个数据是以小端方式排列的，并且一行显示16字节，那么0x47000 + 0x58对应的槽的就在数据的第4行第3列。
-它的值为90240400 00000000，另外我们可以看到got表中前0x47038前的都是0，后面每个槽的值都是90240400 00000000 。（这里每个槽都是8个字节）。
+它的值为90240400 00000000，另外我们可以看到got表中前0x47038前的都是0，后面每个槽的值都是90240400 00000000。（这里每个槽都是8个字节）。
 
 这里是因为，GOT表中的前3个槽都时预留的不给我们的代码使用，后续的槽默认都PLT0(PLT表的基地址)。
 具体来讲，动态库被加载后动态加载器会给他们赋值：
 
-GOT[0]:保存的是 .dynamic 段的地址（即动态段的起始地址）。动态链接器 ld.so 启动时会用这个地址来获取需要解析的动态信息，比如 .dynsym、.dynstr、.rel.plt 等表。
+GOT[0]:保存的是 .dynamic 段的地址（即动态段的起始地址）。动态链接器 ld.so 启动时会用这个地址来获取需要解析的动态信息，比如 .dynsym、.dynstr、.rel.plt等表。
 
-GOT[1]:保存的是 linker/loader 的解析函数地址，即 _dl_runtime_resolve（或平台相关的 resolver stub）。当你第一次调用某个外部函数时，PLT entry 会跳到 GOT[1] 指向的解析器。解析器会根据 GOT[2] + 槽地址找到具体要解析的符号，然后去加载对应的动态库函数地址。
+GOT[1]:保存的是 linker/loader 的解析函数地址，即 _dl_runtime_resolve（或平台相关的 resolver stub）。当你第一次调用某个外部函数时，PLT entry 会跳到GOT[1]指向的解析器。解析器会根据GOT[2] + 槽地址找到具体要解析的符号，然后去加载对应的动态库函数地址。
 
-GOT[2]:保存的是 link_map 结构体指针，这是动态链接器内部维护的 ELF 链接状态表（每个已加载的共享对象有一个 link_map 节点）。_dl_runtime_resolve 通过 GOT[2] 能够知道“当前进程有哪些已加载的库”，从而去符号查找、重定位。
+GOT[2]:保存的是 link_map 结构体指针，这是动态链接器内部维护的 ELF 链接状态表（每个已加载的共享对象有一个 link_map 节点）。_dl_runtime_resolve 通过GOT[2]能够知道“当前进程有哪些已加载的库”，从而去符号查找、重定位。
 
 GOT[6]:47030地址，会存放解析器（_dl_runtime_resolve）的地址。
 另外我们也可以通过readelf查看槽位的属性：
@@ -220,8 +221,8 @@ Relocation section '.rela.plt' at offset 0x11d88 contains 122 entries:
 ```
 我们可以看到printf函数对应的槽信息，它的类型为：R_AARCH64_JUMP_SLOT 表示“这个 GOT 条目需要在运行时被填充成目标函数的真实地址”。
 
-90240400 00000000 因为是小段存储的，它的实际值是：0x402490，它就是PLT0的地址。
-我们使用`objdump -d -j .plt libanative.so`重新来看.plt表。
+90240400 00000000 因为是小端存储的，所以对应的值是：0x402490，它就是PLT0的地址。
+我们使用`objdump -d -j .plt libanative.so`重新来看.plt表来验证。
 ```asm
 // PLT 表头（PLT0）
 0000000000042490 <__cxa_finalize@plt-0x20>:
@@ -244,7 +245,7 @@ Relocation section '.rela.plt' at offset 0x11d88 contains 122 entries:
 ```
 从上面的分析，我们得到我们在第一次调用print这个外部函数时，由于GOT表中的条目是只想PLT0，所以我们最终调用了_dl_runtime_resolve函数。 
 
-_dl_runtime_resolve因为知道GOT表的槽（保存在x16寄存器的槽位置）从而通过.rela.plt也能知道我们调用的函数的符号信息，找到对应的外部函数的地址。然后执行，并且讲查到的地址写入到我们槽。那么下次再调用这个函数就不用再执行解析操作了。
+_dl_runtime_resolve因为知道GOT表的槽（保存在x16寄存器的槽位置）从而通过.rela.plt也能知道我们调用的函数的符号信息，找到对应的外部函数的地址。然后执行，并且将查到的地址写入到我们槽。那么下次再调用这个函数就不用再执行解析操作了。
 
 这个机制也叫延时绑定机制(lazy binding)
 
@@ -277,8 +278,8 @@ _dl_runtime_resolve:
 ```
 <https://elixir.bootlin.com/glibc/glibc-2.29/source/sysdeps/aarch64/dl-trampoline.S>
 
-但是Android使用的bionic的libc，它没有_dl_runtime_resolve函数的定义，这段的代码我并没有从代码的实现上来验证。
-而且Android默认可能并没有开启延时绑定，可能实在so加载时直接进行了绑定。但是我分析的so是Android平台的，它的ELF实现有GOT表、PLT表，所以它整体的流程和linux是差不多的。
+但是Android使用的bionic的libc，它没有_dl_runtime_resolve函数的定义，上述代码PLT[0]，以及调用_dl_runtime_resolve的方式是我查资料，并且在linux的gcc libc中看到实现。
+而Android默认并没有开启延时绑定（RTLD_LAZY），它在so加载时直接进行了绑定。
 
 <https://android.googlesource.com/platform/bionic/>
 
@@ -337,6 +338,9 @@ typedef struct
 } Elf64_Ehdr;
 
 ```
+e_ident的结构为：
+<img src="/images/android/native_elf_ident.png" alt="ident" width="720">
+
 通过`readelf -h libanative.so`我们也能查看文件的头信息。
 
 ```
@@ -366,7 +370,7 @@ ELF Header:
 Section和Program对这个文件的两种不同视角的描述，Section为不加载的情况下的静态分析视角、Pragma描述的是文件加载后的运行时视角。
 
 ## Shdr
-Section Header, ELF文件中的代码(code)、数据(data)不化分位了一些连续的块。Section Header就是描述这些块的名称、类型、在文件中的偏移、被加载后的虚拟地址（应该被加载在什么地方）、大小等。为了节省偏移，我后续只贴出64位的数据结构。
+Section Header, ELF文件中的代码(code)、数据(data)分为了一些连续的块。Section Header就是描述这些块的名称、类型、在文件中的偏移、被加载后的虚拟地址（应该被加载在什么地方）、大小等。为了节省篇幅，我后续只贴出64位的数据结构。
 
 ```
 typedef struct
@@ -492,10 +496,6 @@ Section Headers:
 
 该Section在ELF文件中的偏移。        
 
-为了加载可执行文件，我们需要以不同的方式组织code和data，所有ELF有另一种逻辑视图（也就是我上面说的运行视图），它叫做segments，它用在运行时。相对应的上面讲的Section它用在链接时。
-
-所有其实Section信息时，在运行时是可选的。程序通过Pragma header就可以知道如何去加载这个ELF文件到内存中。
-
 ## 常见的Section
 
 - .init
@@ -517,11 +517,11 @@ Section Headers:
 - .rel.*
 包含重定向的信息，_dl_runtime_resolv 借助它来寻找外部函数以及修改GOT表。
 - .rela.*
-同上，只是他有addend信息。
+同上，只是它有addend信息。
 - .dynamic
 动态链接的数据结构和对象，用来描述依赖库、符号表、重定位信息、初始化/析构函数等；它是动态链接工作的“说明书”。
 - .init_array
-存放一组函数指针，这组函数会在可执行文件初始化后立即执行。C语言中`__attribute__((constructor)`标记的函数就会粗放在这里。
+存放一组函数指针，这组函数会在可执行文件初始化后立即执行。C语言中`__attribute__((constructor)`标记的函数就会存放在这里。
 - .fini_array
 与.init_array相反，程序销毁的时候执行。
 - .shstrtab
@@ -535,18 +535,24 @@ Section Headers:
 - .dynstr
 字符串表，用于动态链接时。
 - .interp
-RTLD_* 是一组 动态加载标志（flags），用于 dlopen() 这个函数。如：RTLD_LAZY，懒解析：只在第一次调用符号时才解析（默认）。RTLD_NOW 立即解析：dlopen() 时就把所有未定义符号解析完（性能差但安全）。
+RTLD_* 是一组 动态加载标志（flags），用于 dlopen() 这个函数。如：RTLD_LAZY，懒解析：只在第一次调用符号时才解析。RTLD_NOW 立即解析：dlopen() 时就把所有未定义符号解析完（性能差但安全）。
 - .rel.dyn
 全局变量可重定位表。
 - .rel.plt
 函数可重定位表。
+- .eh_frame
+发生crash后，用于栈展开。
+
+为了加载可执行文件，我们需要以不同的方式组织code和data，所有ELF有另一种逻辑视图（运行视图），它叫做segments，它用在运行时。相对应的上面讲的Section它可能用在静态链接时，以及我们用工具分析二进制文件时。
+
+所有理论上Section信息时，在运行时是可选的（我分析binonic时，如果有section 信息，加载器也会读取）。程序通过Pragma header就可以知道如何去加载这个ELF文件到内存中。
 
 ## Phdr
-与Shdr相对，Phdr是提供segments视图(执行视图)，它给操作系统或动态链接器（dynamic-linker）提供了如何去加载这个程序的信息。与之相的Shdr可以看作是提供给程序静态链接用的。
+与Shdr相对，Phdr是提供segments视图(运行视图)，它给操作系统或动态链接器（dynamic-linker）提供了如何去加载这个程序的信息。与之相对的Shdr可以看作是提供给程序静态链接用的。
 ```
 typedef struct
 {
-  Elf64_Word	p_type;			/* Segment type */
+  Elf64_Word	p_type;		/* Segment type */
   Elf64_Word	p_flags;		/* Segment flags */
   Elf64_Off	p_offset;		/* Segment file offset */
   Elf64_Addr	p_vaddr;		/* Segment virtual address */
@@ -572,7 +578,7 @@ Segment在内存中的虚拟地址，（对于可加载段，p_vaddr % PAGE_SIZE
 
 **p_memsz**
 
-Segment在内存中的大小。（一些Section只制定了需要在内存中分配多大空间，并不要求讲Section中的数据映射到内存，比如.bss）。
+Segment在内存中的大小。（一些Section只指定了需要在内存中分配多大空间，并不要求将Section中的数据映射到内存，比如.bss）。
 
 同样我们可以用readelf查看Segments Header的信息。
 ```
@@ -617,7 +623,7 @@ Program Headers:
    08     .note.android.ident .note.gnu.build-id
 ```
 从上面的信息中，我们可以看到Segemnts的被映射的地址范围、标记、权限信息。以及每个Segment与Sections的对应关系。
-这个so文件中
+这个so文件中：
 
 PHDR：是Program Header自身。
 
@@ -655,11 +661,13 @@ typedef struct
 **st_info**
 
 符号的binding和类型，binging有：
-- STB_LOCAL(局部符号（仅当前文件可见）)
+
+- STB_LOCAL：局部符号（仅当前文件可见）
 - STB_GLOBAL：全局符号（可导出/可被其他文件引用）
 - STB_WEAK：弱符号（可被同名全局符号覆盖）
 
 常见的类型有：
+
 - STT_NOTYPE： 未定义类型
 - STT_FUNC： 函数类型、或其它可执行代码类型。
 - STT_OBJECT：数据对象类型
@@ -667,7 +675,8 @@ typedef struct
 
 **st_other**
 
-符号的可见性
+符号的可见性：
+
 - STV_DEFAULT： 由符号的binding来决定。
 - STV_PROTECTED：符号对其他模块可见，但不能被重定义
 - STV_HIDDEN：符号对其他模块不可见，但在本模块内可用
@@ -864,3 +873,380 @@ static std::pair<uint32_t, uint32_t> calculate_gnu_hash_simple(const char* name)
 
 需要注意的是，只有 .dynsym 有hash表， .symtab 是没有hash表只能遍历查找。
 
+# 重定位
+前文讲到调用外部函数时，会获取GOT表槽中的值作为地址然后挑战过去，而这个地址在编译时无法确定，所以运行时会被dynamic linker设置位真正的函数地址。这个给GOT表设置真实地址的过程就叫做重定位。
+
+## 重定位信息
+
+```c++
+typedef struct
+{
+  Elf64_Addr	r_offset;		/* Address */
+  Elf64_Xword	r_info;			/* Relocation type and symbol index */
+} Elf64_Rel;
+
+typedef struct
+{
+  Elf64_Addr	r_offset;		/* Address */
+  Elf64_Xword	r_info;			/* Relocation type and symbol index */
+  Elf64_Sxword	r_addend;		/* Addend */
+} Elf64_Rela;
+```
+
+**r_offset**
+指向需要执行重定位操作的位置。如GOT表重定位的case下，这个值就是被需要被重定位的函数对应的GOT表Slot的相对地址。
+
+- 对于 ET_REL 类型的二进制文件，此值表示节（section）内的偏移量，即需要进行重定位的节内位置。
+
+- 对于 ET_EXEC 类型的二进制文件，此值表示受重定位影响的虚拟地址。
+
+**r_info**
+同时提供了符号表索引（指明此次重定位所依据的符号）以及需要应用的重定位类型。
+```c
+#define ELF64_R_SYM(i) ((i) >> 32)
+#define ELF64_R_TYPE(i) ((i) & 0xffffffff)
+```
+info中包含了类型、符号信息。其中符号就是上文提到的.dynsym表中的符号的索引。
+重定位的类型有很多，arm64常见的有：
+
+- R_AARCH64_JUMP_SLOT
+- R_AARCH64_GLOB_DAT
+- R_AARCH64_ABS64
+
+不同类型的重定位信息存储在不同的重定位表中。
+
+**r_addend**
+指定一个常量加数，用于计算写入可重定位字段的最终值。
+
+## 重定位表
+可以通过 `sh readelf -S libanative.so ` 查看重定位表的信息。
+
+```sh
+➜  arm64-v8a readelf -S libanative.so
+There are 34 section headers, starting at offset 0x1cf4d8:
+
+Section Headers:
+  [Nr] Name              Type             Address           Offset
+       Size              EntSize          Flags  Link  Info  Align
+  ...   
+  [ 8] .rela.dyn         RELA             0000000000009550  00009550
+       0000000000008838  0000000000000018   A       3     0     8
+  [ 9] .rela.plt         RELA             0000000000011d88  00011d88
+       0000000000000b70  0000000000000018  AI       3    21     8
+  ...
+  [16] .data.rel.ro      PROGBITS         0000000000043c50  00042c50
+       00000000000030e0  0000000000000000  WA       0     0     8
+  [19] .dynamic          DYNAMIC          0000000000046d48  00045d48
+       00000000000001d0  0000000000000010  WA       7     0     8
+  ...
+```
+其中.rela.plt 存放函数跳转相关的R_AARCH64_JUMP_SLOT类型的重定位信息。.rela.dyn存放非函数跳转相关的其他类型重定位信息。
+可以通过`sh readelf -rW libanative.so ` 工具重新打印重定位表。
+
+```sh
+➜  arm64-v8a readelf -rW libanative.so
+
+Relocation section '.rela.dyn' at offset 0x9550 contains 1453 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000043c50  0000000000000403 R_AARCH64_RELATIVE                        43c50
+0000000000043c60  0000000000000403 R_AARCH64_RELATIVE                        43cc0
+0000000000043c68  0000000000000403 R_AARCH64_RELATIVE                        2ab48
+0000000000043c70  0000000000000403 R_AARCH64_RELATIVE                        2ab54
+...
+0000000000048458  0000000000000403 R_AARCH64_RELATIVE                        48f20
+0000000000046fa0  0000002700000401 R_AARCH64_GLOB_DAT     0000000000000000 __sF@LIBC + 0
+0000000000046aa8  0000004500000101 R_AARCH64_ABS64        0000000000046ac8 _ZTISt12length_error + 0
+0000000000046f18  0000004500000401 R_AARCH64_GLOB_DAT     0000000000046ac8 _ZTISt12length_error + 0
+0000000000046088  0000004600000101 R_AARCH64_ABS64        00000000000163b2 _ZTSs + 0
+00000000000460d8  0000004900000101 R_AARCH64_ABS64        00000000000163bb _ZTSt + 0
+0000000000046598  0000004a00000101 R_AARCH64_ABS64        000000000001644b _ZTSPDs + 0
+0000000000047010  0000004b00000401 R_AARCH64_GLOB_DAT     0000000000046bf8 _ZTVSt8bad_cast
+...
+Relocation section '.rela.plt' at offset 0x11d88 contains 122 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000047038  0000000100000402 R_AARCH64_JUMP_SLOT    0000000000000000 __cxa_finalize@LIBC + 0
+0000000000047040  0000000200000402 R_AARCH64_JUMP_SLOT    0000000000000000 __cxa_atexit@LIBC + 0
+0000000000047048  0000000300000402 R_AARCH64_JUMP_SLOT    0000000000000000 __register_atfork@LIBC + 0
+0000000000047050  0000021400000402 R_AARCH64_JUMP_SLOT    000000000001dc50 SayHello + 0
+0000000000047058  0000000400000402 R_AARCH64_JUMP_SLOT    0000000000000000 printf@LIBC + 0
+```
+上图表中：
+
+- Offset,对应Elf64_Rela中的r_offset字段。
+- Info,对应Elf64_Rela中的r_info字段。
+- Type,对应r_info中的重定位类型信息。
+- Symbol's Value,对对应r_info中计算出的符号地址信息。
+- Symbol's Name + Addend，对应r_info中查找符号表的符号名信息。
+通过上面的打印，不难发现：，除了外部符号（Symbol's Value等于0）外，很多内部符号也需要重新定位。
+
+## 重定位过程
+### R_AARCH64_JUMP_SLOT
+
+```c++
+// bionic linker_info.h
+...
+
+struct soinfo {
+ public:
+  soinfo(android_namespace_t* ns, const char* name, const struct stat* file_stat,
+         off64_t file_offset, int rtld_flags);
+  ~soinfo();
+ soinfo* next;
+ private:
+  bool relocate(const SymbolLookupList& lookup_list);
+}  
+
+bool soinfo::relocate(const SymbolLookupList& lookup_list) {
+...
+    if (!packed_relocate<RelocMode::Typical>(relocator, sleb128_decoder(packed_relocs, packed_relocs_size))) {
+      return false;
+    }
+...
+}  
+
+template <RelocMode OptMode, typename ...Args>
+static bool packed_relocate(Relocator& relocator, Args ...args) {
+  return needs_slow_relocate_loop(relocator) ?
+      packed_relocate_impl<RelocMode::General>(relocator, args...) :
+      packed_relocate_impl<OptMode>(relocator, args...);
+}
+
+template <RelocMode Mode>
+__attribute__((noinline))
+static bool packed_relocate_impl(Relocator& relocator, sleb128_decoder decoder) {
+  return for_all_packed_relocs(decoder, [&](const rel_t& reloc) {
+    return process_relocation<Mode>(relocator, reloc);
+  });
+}
+
+template <RelocMode Mode>
+__attribute__((always_inline))
+static inline bool process_relocation(Relocator& relocator, const rel_t& reloc) {
+  return Mode == RelocMode::General ?
+      process_relocation_general(relocator, reloc) :
+      process_relocation_impl<Mode>(relocator, reloc);
+}
+
+__attribute__((noinline))
+static bool process_relocation_general(Relocator& relocator, const rel_t& reloc) {
+  return process_relocation_impl<RelocMode::General>(relocator, reloc);
+}
+
+#if defined (__aarch64__)
+....
+#define R_GENERIC_JUMP_SLOT     R_AARCH64_JUMP_SLOT
+#endif 
+
+template <RelocMode Mode>
+__attribute__((always_inline))
+static bool process_relocation_impl(Relocator& relocator, const rel_t& reloc) {
+  constexpr bool IsGeneral = Mode == RelocMode::General;
+  // 计算出 r_offse的真实虚拟地址 = 基地址（load_bias) +  r_offset
+    void* const rel_target = reinterpret_cast<void*>(
+      relocator.si->apply_memtag_if_mte_globals(reloc.r_offset + relocator.si->load_bias));
+  // 存放该符号，对应的地址    
+   ElfW(Addr) sym_addr = 0;   
+   ... 
+    if (r_sym == 0) {
+      // Do nothing.
+    } else {
+      if (!lookup_symbol<IsGeneral>(relocator, r_sym, sym_name, &found_in, &sym)) return false;
+      if (sym != nullptr) {
+        const bool should_protect_segments = handle_text_relocs &&
+                                             found_in == relocator.si &&
+                                             ELF_ST_TYPE(sym->st_info) == STT_GNU_IFUNC;
+        if (should_protect_segments && !protect_segments()) return false;
+        // 寻找到与符号对应的外部函数地址
+        sym_addr = found_in->resolve_symbol_address(sym);
+     }
+  ...
+    if constexpr (IsGeneral || Mode == RelocMode::JumpTable) {
+    // 这里R_GENERIC_JUMP_SLOT在arm64平台就是R_AARCH64_JUMP_SLOT
+    if (r_type == R_GENERIC_JUMP_SLOT) {
+      count_relocation_if<IsGeneral>(kRelocAbsolute);
+      // 将寻找到的函数地址，赋值给符号信息中r_offset对应的地址
+      const ElfW(Addr) result = sym_addr + get_addend  _norel();
+      LD_DEBUG(reloc && IsGeneral, "RELO JMP_SLOT %16p <- %16p %s",
+               rel_target, reinterpret_cast<void*>(result), sym_name);
+      *static_cast<ElfW(Addr)*>(rel_target) = result;
+      return true;
+    }
+  }
+  ...
+}
+
+```
+
+## R_AARCH64_GLOB_DAT
+这类是全局变量的地址。
+```c++
+// linker_relocate.cpp 
+
+#define R_GENERIC_GLOB_DAT      R_AARCH64_GLOB_DAT
+
+template <RelocMode Mode>
+__attribute__((always_inline))
+static bool process_relocation_impl(Relocator& relocator, const rel_t& reloc) {
+  constexpr bool IsGeneral = Mode == RelocMode::General;
+
+  void* const rel_target = reinterpret_cast<void*>(
+      relocator.si->apply_memtag_if_mte_globals(reloc.r_offset + relocator.si->load_bias));
+  const uint32_t r_type = ELFW(R_TYPE)(reloc.r_info);
+  const uint32_t r_sym = ELFW(R_SYM)(reloc.r_info);
+
+  soinfo* found_in = nullptr;
+  const ElfW(Sym)* sym = nullptr;
+  const char* sym_name = nullptr;
+  ElfW(Addr) sym_addr = 0;
+
+  ...
+
+   if (r_type == R_GENERIC_ABSOLUTE) {
+      count_relocation_if<IsGeneral>(kRelocAbsolute);
+      if (found_in) sym_addr = found_in->apply_memtag_if_mte_globals(sym_addr);
+      const ElfW(Addr) result = sym_addr + get_addend_rel();
+      LD_DEBUG(reloc && IsGeneral, "RELO ABSOLUTE %16p <- %16p %s",
+               rel_target, reinterpret_cast<void*>(result), sym_name);
+      *static_cast<ElfW(Addr)*>(rel_target) = result;
+      return true;
+    } else if (r_type == R_GENERIC_GLOB_DAT) {
+      
+      count_relocation_if<IsGeneral>(kRelocAbsolute);
+      if (found_in) sym_addr = found_in->apply_memtag_if_mte_globals(sym_addr);
+      // 将寻找到的地址，赋值给reloc.r_offset对应的虚拟地址
+      const ElfW(Addr) result = sym_addr + get_addend_norel();
+      LD_DEBUG(reloc && IsGeneral, "RELO GLOB_DAT %16p <- %16p %s",
+               rel_target, reinterpret_cast<void*>(result), sym_name);
+      *static_cast<ElfW(Addr)*>(rel_target) = result;
+      return true;
+    } else if (r_type == R_GENERIC_RELATIVE) {
+
+}
+
+```
+
+## R_AARCH64_RELATIVE
+基址修正、无外部符号依赖。即它的重定位不依赖符号解析。计算方式： B + A;
+
+## R_AARCH64_ABS64
+64 位绝对地址重定位，需要符号解析。常见于需要存放全局变量或函数的真实指针的场景。计算方式：B + S;
+
+# Dynamic段
+
+Phdr中的LOAD和GNU_RELRO只负责动态库的地址映射。而Sections Header中信息主要都存入了dynamic段，它包含了linker需要的大多数信息。
+
+```sh
+➜  arm64-v8a readelf -l libanative.so
+
+Elf file type is DYN (Shared object file)
+Entry point 0x0
+There are 9 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset             VirtAddr           PhysAddr
+                 FileSiz            MemSiz              Flags  Align
+  PHDR           0x0000000000000040 0x0000000000000040 0x0000000000000040
+                 0x00000000000001f8 0x00000000000001f8  R      0x8
+  LOAD           0x0000000000000000 0x0000000000000000 0x0000000000000000
+                 0x0000000000042c50 0x0000000000042c50  R E    0x1000
+  LOAD           0x0000000000042c50 0x0000000000043c50 0x0000000000043c50
+                 0x00000000000037b8 0x00000000000037b8  RW     0x1000
+  LOAD           0x0000000000046408 0x0000000000048408 0x0000000000048408
+                 0x0000000000000058 0x0000000000000b18  RW     0x1000
+  DYNAMIC        0x0000000000045d48 0x0000000000046d48 0x0000000000046d48
+                 0x00000000000001d0 0x00000000000001d0  RW     0x8
+  GNU_RELRO      0x0000000000042c50 0x0000000000043c50 0x0000000000043c50
+                 0x00000000000037b8 0x00000000000043b0  R      0x1
+  GNU_EH_FRAME   0x0000000000016b0c 0x0000000000016b0c 0x0000000000016b0c
+                 0x0000000000001534 0x0000000000001534  R      0x4
+  GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000
+                 0x0000000000000000 0x0000000000000000  RW     0x0
+  NOTE           0x0000000000000238 0x0000000000000238 0x0000000000000238
+                 0x00000000000000bc 0x00000000000000bc  R      0x4
+
+ Section to Segment mapping:
+  Segment Sections...
+   00
+   01     .note.android.ident .note.gnu.build-id .dynsym .gnu.version .gnu.version_r .gnu.hash .dynstr .rela.dyn .rela.plt .gcc_except_table .rodata .eh_frame_hdr .eh_frame .text .plt
+   02     .data.rel.ro .fini_array .init_array .dynamic .got .got.plt
+   03     .data .bss
+   04     .dynamic
+   05     .data.rel.ro .fini_array .init_array .dynamic .got .got.plt
+   06     .eh_frame_hdr
+   07
+   08     .note.android.ident .note.gnu.build-id
+```
+.dynamic也是一个表，每个表项的结构为：
+
+```c++
+typedef struct
+{
+  Elf64_Sxword	d_tag;			/* Dynamic entry type */
+  union
+    {
+      Elf64_Xword d_val;		/* Integer value */
+      Elf64_Addr d_ptr;			/* Address value */
+    } d_un;
+} Elf64_Dyn;
+```
+
+**d_tag**
+
+- DT_NEEDED,依赖的共享库名（索引到字符串表）
+- DT_SYMTAB,指向符号表
+- DT_HASH,符号哈希表，用于快速符号查找
+- DT_STRTAB,指向字符串表，用于存储库名、符号名
+- DT_PLTGOT,PLT/GOT 表地址
+- SONAME,当前动态库名称的索引，索引是相对于.dynstr表的偏移
+- SYMTAB,.dynsym表起始地址
+- SYMENT,.dynsym表表项大小
+- STRTAB,.dynstr表起始地址
+- STRSZ,.dynstr表的字节数大小
+- INIT_ARRAY .init_array表的起始地址
+- .INIT_ARRAYSZ .init_array表的字节数大小
+
+**d_val**
+保存一个整数值，其含义视具体情况而定，例如可以表示单个重定位条目的大小等。
+**d_ptr**
+保存一个虚拟内存地址，可指向链接器所需的各种位置；一个典型示例是，当 d_tag 为 DT_SYMTAB 时，它指向符号表的地址。
+
+执行```arm64-v8a readelf -d libanative.so```
+```sh
+➜  arm64-v8a readelf -d libanative.so
+
+Dynamic section at offset 0x45d48 contains 29 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libandroid.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [liblog.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so]
+ 0x000000000000000e (SONAME)             Library soname: [libanative.so]
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x0000000000000007 (RELA)               0x9550
+ 0x0000000000000008 (RELASZ)             34872 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffff9 (RELACOUNT)          989
+ 0x0000000000000017 (JMPREL)             0x11d88
+ 0x0000000000000002 (PLTRELSZ)           2928 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x47020
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000006 (SYMTAB)             0x2f8
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000005 (STRTAB)             0x4d04
+ 0x000000000000000a (STRSZ)              18506 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x3ed8
+ 0x0000000000000019 (INIT_ARRAY)         0x46d40
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x46d30
+ 0x000000000000001c (FINI_ARRAYSZ)       16 (bytes)
+ 0x000000006ffffff0 (VERSYM)             0x3a00
+ 0x000000006ffffffe (VERNEED)            0x3e98
+ 0x000000006fffffff (VERNEEDNUM)         2
+ 0x0000000000000000 (NULL)               0x0
+```
+可见.dynamic 和Section Headers类似，指向的是参与动态链接的Sections
+
+# 参考
+https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter6-48031.html#scrolltoc
