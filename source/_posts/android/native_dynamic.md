@@ -1,5 +1,5 @@
 ---
-title: Android动态链接技术
+title: Android动态链接技术一（ELF文件）
 date: 2025-09-06 10:43:41
 tags:
 - [code]

@@ -1,5 +1,5 @@
 ---
-title: Android动态链接过程
+title: Android动态链接技术二（动态库的加载过程）
 date: 2025-09-20 10:01:42
 tags:
 - [code]
@@ -9,7 +9,7 @@ categories:
 
 # 动态库的链接过程
 
-我们通过readelf可以产看到这个动态库依赖了5个其他的动态库。根据以往的经验，我们可以猜到加载次动态库，肯定需要先加载完它依赖的动态库，并且加载它的依赖项目时可能子库又依赖其他动态库，有会去要加载其他二级子库。整个依赖应该是一个DAG（有向不循环图）。
+我之前写了简单的C++文件然后用Android Ndk构建除了一个动态库，通过readelf可以查看到这个动态库依赖了5个其他的动态库。根据以往的经验，一个工程依赖库应该是一个DAG（有向不循环图）。
 
 ```sh
  0x0000000000000001 (NEEDED)             Shared library: [libandroid.so]
@@ -18,9 +18,94 @@ categories:
  0x0000000000000001 (NEEDED)             Shared library: [libdl.so]
  0x0000000000000001 (NEEDED)             Shared library: [libc.so]
 ```
-```c++
 
-// 加载一个动态库，filename为库的名称。
+{% mermaid sequenceDiagram %}
+    participant libdl 
+    participant linker
+    participant LoadTask
+    participant soinfo
+    participant ElfReader 
+
+
+    libdl->>+libdl: dlopen
+    libdl->>+linker: find_library
+    linker->>linker: find_libraries
+    linker->>linker: prepare LoadTask list
+    Note right of linker: Step 1. prepare loadtasks
+    linker->>+LoadTask: create
+    Note over linker, LoadTask: Create a loadTask for current so that will be load 
+    LoadTask->>-linker: return
+    Note right of linker: Step 2. bfs dependencies
+    loop bfs dependencies
+      
+        linker->>linker: load_library
+        linker->>+soinfo: alloc
+        soinfo->>soinfo: generate_handle and add to ns
+        soinfo->>-linker: return
+        linker->>+ElfReader: construct 
+        linker->>+LoadTask: read
+        LoadTask->>+ElfReader: Read
+        ElfReader->>ElfReader:ReadElfHeader
+        ElfReader->>ElfReader:VerifyElfHeader
+        ElfReader->>ElfReader:ReadProgramHeaders
+        ElfReader->>ElfReader:CheckProgramHeaderAlignment
+        ElfReader->>ElfReader:ReadSectionHeaders
+        ElfReader->>ElfReader:ReadDynamicSection
+        ElfReader->>ElfReader:ReadPadSegmentNote
+        ElfReader->>-LoadTask: return
+        LoadTask->>linker: return
+        linker->>ElfReader: Get DT_NEEDED
+        linker->>LoadTask: create
+        LoadTask->>linker: return
+        linker->>linker: add to LoadTask list
+        Note right of linker: Create a LoadTask for dependency and add it to list.
+
+    end
+    linker->>linker: shuffle loadtasks
+    Note right of linker: Step 3. foreach soinfos to prelink libraries
+    loop loadtasks
+        linker->>soinfo:prelink_image
+        Note right of soinfo: Get all information from elf dynamic section.
+    end
+    linker->>linker:Construct the global group
+    Note right of linker: Step 4. Construct the global group
+    linker->>linker: Step 5. Collect roots of local_groups
+    Note right of linker: Step 6. Link all local groups
+    loop local_group_roots
+        linker->>linker: walk_dependencies_tree
+        Note right of linker: Collect soinfo to a local_group
+        loop local_group
+            linker->>soinfo:link_image
+            soinfo->>soinfo:relocate
+            Note right of soinfo: Relocate by rel/rela
+        end
+    end
+    linker->>linker: mark linked
+    Note right of linker: Step 7. Mark libraries as linked
+    linker->>soinfo: call_constructors
+    linker->>-libdl: return handle
+    libdl->>-libdl: return 
+
+{% endmermaid %}
+
+上面是一个动态库被加载的大致流程，我们有时候会使用dlopen一个外部库，然后通过dlsym根据符号查找某个函数进行调用。这里就通过dlopen这个函数的调用作为切入点来分析动态库的加载过程。
+
+上图描述的动态库的加载流程粗略概括为：
+
+1. 获取调用方传入的要加载的库的名称、调用者的namespace。创建一个load_tasks列表
+2. 根据库的名称，创建一个LoadTask，放到遍历列表中。开始遍历列表，通过LoadTask、创建soinfo、解析so文件，读取Shdrs、Phdrs、获取依赖信息，然后对依赖so也创建一个LoadTask。并放到遍历列表load_tasks中，继续遍历列表。
+3. 打乱LoadTask列表的顺序、继续通过LoadTask预链接库。
+4. 根据Android中的namespace机制，构建一个local_group树，收集roots以便后续遍历。
+5. 遍历local_group树，对库进行重定位。
+6. 标记所有的库状态为已链接。调用每个库的构造器。
+
+# 打开一个动态库
+
+dlopen函数的使用方式：https://man7.org/linux/man-pages/man3/dlopen.3.html
+
+```cpp
+// libdl.cpp
+// 加载一个动态库，filename为库的名称，flag可以为：RTLD_LAZY、RTLD_NOW、RTLD_GLOBAL...
 __attribute__((__weak__))
 void* dlopen(const char* filename, int flag) {
   // 当前函数的返回地址
@@ -29,6 +114,7 @@ void* dlopen(const char* filename, int flag) {
 }
 
 void* __loader_dlopen(const char* filename, int flags, const void* caller_addr) {
+  // android_dlextinfo传nullptr
   return dlopen_ext(filename, flags, nullptr, caller_addr);
 }
 
@@ -46,12 +132,11 @@ static void* dlopen_ext(const char* filename,
   return result;
 }
 
-void* do_dlopen(
-               // 要加载的库名称
-                const char* name, int flags,
-                const android_dlextinfo* extinfo,
-                // dlopen中的函数返回地址
-                const void* caller_addr) {
+void* do_dlopen(const char* name,  // 要加载的库名称
+                int flags, // flag
+                const android_dlextinfo* extinfo, // nullptr
+                const void* caller_addr  // dlopen中的函数返回地址
+                ) {
                 ...
      // 找出调用者的soinfo（谁发起的dlopen)           
      soinfo* const caller = find_containing_library(caller_addr); 
@@ -92,31 +177,16 @@ void* do_dlopen(
 
 ```
 
+# 寻找并加载动态库
+
 ```cpp
-static bool find_loaded_library_by_realpath(android_namespace_t* ns, const char* realpath,
-                                            bool search_linked_namespaces, soinfo** candidate) {
-  auto predicate = [&](soinfo* si) { return strcmp(realpath, si->get_realpath()) == 0; };
-  // 遍历进程中已经加载的so,通过比较文件路径判断是否已经加载了这个需要加载的so。如果已经加载了candidate就是要加载的so的soinfo。
-  *candidate = ns->soinfo_list().find_if(predicate);
-
-  if (*candidate == nullptr && search_linked_namespaces) {
-    for (auto& link : ns->linked_namespaces()) {
-      android_namespace_t* linked_ns = link.linked_namespace();
-      soinfo* si = linked_ns->soinfo_list().find_if(predicate);
-      if (si != nullptr && link.is_accessible(si->get_soname())) {
-        *candidate = si;
-        return true;
-      }
-    }
-  }
-  return *candidate != nullptr;
-}
-
 // 寻找动态库
-static soinfo* find_library(android_namespace_t* ns,
-                            const char* name, int rtld_flags,
-                            const android_dlextinfo* extinfo,
-                            soinfo* needed_by) {
+static soinfo* find_library(android_namespace_t* ns,// caller所处的namespace
+                            const char* name,  // 要加载的so名称
+                            int rtld_flags, // flag
+                            const android_dlextinfo* extinfo, // nullptr
+                            soinfo* needed_by // caller的soinfo
+                            ) {
   soinfo* si = nullptr;
 
   if (name == nullptr) {
@@ -145,7 +215,7 @@ static soinfo* find_library(android_namespace_t* ns,
 ```cpp
 // linker.cpp
 // 加载动态库，主要分下面几步：
-// 1. 找到本库，然后通过DT_NEED找出它的第一层依赖，然后创建加载任务，然后通过BFS遍历的方式继续加载二级、三级...依赖。
+// 1. 根据so的名称找到要加载的库，然后通过DT_NEED找出它的第一层依赖，然后创建加载任务，然后通过BFS遍历的方式继续加载二级、三级...依赖。
 // 2. 打乱加载顺序，加载所有的so。
 // 3. 预链接所有库。
 // 5. 根据所有库的namespce构建构建查找树（影响符号寻找顺序）。
@@ -154,16 +224,16 @@ static soinfo* find_library(android_namespace_t* ns,
 // not their transitive dependencies) as children of the start_with library.
 // This is false when find_libraries is called for dlopen(), when newly loaded
 // libraries must form a disjoint tree.
-bool find_libraries(android_namespace_t* ns,
-                    soinfo* start_with,
-                    const char* const library_names[],
-                    size_t library_names_count,
-                    soinfo* soinfos[],
-                    std::vector<soinfo*>* ld_preloads,
-                    size_t ld_preloads_count,
-                    int rtld_flags,
-                    const android_dlextinfo* extinfo,
-                    bool add_as_children,
+bool find_libraries(android_namespace_t* ns,// caller的ns
+                    soinfo* start_with, // caller的soinfo
+                    const char* const library_names[], // 就存放一个当前要加载的so名称
+                    size_t library_names_count, // 1
+                    soinfo* soinfos[],// 输出soinfo
+                    std::vector<soinfo*>* ld_preloads, // nullptr
+                    size_t ld_preloads_count, // 0
+                    int rtld_flags, // rtld_flags
+                    const android_dlextinfo* extinfo, // nullptr
+                    bool add_as_children, // false
                     std::vector<android_namespace_t*>* namespaces) {
   // Step 0: prepare.
   std::unordered_map<const soinfo*, ElfReader> readers_map;
@@ -171,7 +241,7 @@ bool find_libraries(android_namespace_t* ns,
   // 首次这里的 library_names_count = 1
   for (size_t i = 0; i < library_names_count; ++i) {
     const char* name = library_names[i];
-    // 创建一个加载任务
+    // 为要加载的动态库创建一个加载任务
     load_tasks.push_back(LoadTask::create(name, start_with, ns, &readers_map));
   }
   
@@ -636,11 +706,11 @@ static bool load_library(android_namespace_t* ns,
       return false;
     }
   }
-// 创建出soinfo
+  // 创建出soinfo
   soinfo* si = soinfo_alloc(ns, realpath.c_str(), &file_stat, file_offset, rtld_flags);
-// 将soinfo设置给加载任务
+  // 将soinfo设置给加载任务
   task->set_soinfo(si);
-// 读取文件，创建ELFReader
+  // 注意：读取文件，创建ELFReader
   // Read the ELF header and some of the segments.
   if (!task->read(realpath.c_str(), file_stat.st_size)) {
     task->remove_cached_elf_reader();
@@ -1467,7 +1537,8 @@ bool ElfReader::MapBssSection(const ElfW(Phdr)* phdr, ElfW(Addr) seg_page_end,
   return true;
 }
 ```
-## 预链接
+
+# 预链接
 
 ```cpp
 // An empty list of soinfos
@@ -1995,7 +2066,8 @@ void phdr_table_get_dynamic_section(const ElfW(Phdr)* phdr_table, size_t phdr_co
   }
 }
 ```
-## 链接
+
+# 链接
 
 ```cpp
 bool soinfo::link_image(const SymbolLookupList& lookup_list, soinfo* local_group_root,
@@ -2191,7 +2263,7 @@ bool soinfo::relocate(const SymbolLookupList& lookup_list) {
 }
 ```
 
-### 重定位
+## 重定位
 
 ```cpp
 
@@ -2781,7 +2853,8 @@ inline bool is_symbol_global_and_defined(const soinfo* si, const ElfW(Sym)* s) {
 }
 ```
 
-## 调用构造器
+
+# 调用构造器
 
 ```cpp
 void soinfo::call_constructors() {
