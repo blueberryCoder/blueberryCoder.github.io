@@ -92,8 +92,8 @@ categories:
 
 上图描述的动态库的加载流程粗略概括为：
 
-1. 获取调用方传入的要加载的库的名称、调用者的namespace。创建一个load_tasks列表
-2. 根据库的名称，创建一个LoadTask，放到遍历列表中。开始遍历列表，通过LoadTask、创建soinfo、解析so文件，读取Shdrs、Phdrs、获取依赖信息，然后对依赖so也创建一个LoadTask。并放到遍历列表load_tasks中，继续遍历列表。
+1. 获取调用方传入的要加载的库的名称、调用者的namespace。创建一个load_tasks列表。
+2. 根据库的名称创建一个LoadTask，放到遍历列表中。并开始遍历列表，通过LoadTask、创建soinfo、解析so文件，读取Shdrs、Phdrs、获取依赖库信息，然后对依赖的so库也创建一个LoadTask，并放到遍历列表load_tasks中，然后继续遍历列表。
 3. 打乱LoadTask列表的顺序、继续通过LoadTask预链接库。
 4. 根据Android中的namespace机制，构建一个local_group树，收集roots以便后续遍历。
 5. 遍历local_group树，对库进行重定位。
@@ -101,7 +101,7 @@ categories:
 
 # 打开一个动态库
 
-dlopen函数的使用方式：https://man7.org/linux/man-pages/man3/dlopen.3.html
+dlopen函数的使用方式：<https://man7.org/linux/man-pages/man3/dlopen.3.html>
 
 ```cpp
 // libdl.cpp
@@ -137,7 +137,7 @@ void* do_dlopen(const char* name,  // 要加载的库名称
                 const android_dlextinfo* extinfo, // nullptr
                 const void* caller_addr  // dlopen中的函数返回地址
                 ) {
-                ...
+     ...
      // 找出调用者的soinfo（谁发起的dlopen)           
      soinfo* const caller = find_containing_library(caller_addr); 
      // 调用者的namespace
@@ -177,7 +177,7 @@ void* do_dlopen(const char* name,  // 要加载的库名称
 
 ```
 
-# 寻找并加载动态库
+# 寻找加载整体流程
 
 ```cpp
 // 寻找动态库
@@ -237,6 +237,7 @@ bool find_libraries(android_namespace_t* ns,// caller的ns
                     std::vector<android_namespace_t*>* namespaces) {
   // Step 0: prepare.
   std::unordered_map<const soinfo*, ElfReader> readers_map;
+  // 创建LoadTaskList; typedef std::vector<LoadTask*> LoadTaskList;
   LoadTaskList load_tasks;
   // 首次这里的 library_names_count = 1
   for (size_t i = 0; i < library_names_count; ++i) {
@@ -265,7 +266,7 @@ bool find_libraries(android_namespace_t* ns,// caller的ns
     LD_LOG(kLogDlopen, "find_library_internal(ns=%s@%p): task=%s, is_dt_needed=%d",
            start_ns->get_name(), start_ns, task->get_name(), is_dt_needed);
 
-// 读取ELF文件，将Shdrs和Phdrs映射进来。并为依赖创建load_task放到load_tasks列表中。这是一种BFS遍历
+// 读取ELF文件，将Shdrs和Phdrs等映射进来，并为依赖创建load_task放到load_tasks列表中。这是一种BFS遍历
     if (!find_library_internal(start_ns, task, &zip_archive_cache, &load_tasks, rtld_flags)) {
       return false;
     }
@@ -305,6 +306,7 @@ bool find_libraries(android_namespace_t* ns,// caller的ns
   // 打乱加载的顺序
   // Step 2: Load libraries in random order (see b/24047022)
   LoadTaskList load_list;
+  // 找出还没有linked的so
   for (auto&& task : load_tasks) {
     soinfo* si = task->get_soinfo();
     auto pred = [&](const LoadTask* t) {
@@ -321,6 +323,7 @@ bool find_libraries(android_namespace_t* ns,// caller的ns
     reserved_address_recursive = extinfo->flags & ANDROID_DLEXT_RESERVED_ADDRESS_RECURSIVE;
   }
   if (!reserved_address_recursive) {
+    // 打乱加载顺序
     // Shuffle the load order in the normal case, but not if we are loading all
     // the libraries to a reserved address range.
     shuffle(&load_list);
@@ -343,7 +346,7 @@ bool find_libraries(android_namespace_t* ns,// caller的ns
   for (auto&& task : load_list) {
     address_space_params* address_space =
         (reserved_address_recursive || !task->is_dt_needed()) ? &extinfo_params : &default_params;
-        // 加载so,可以通过address_space影响加载地址
+    // 加载so,可以通过address_space影响加载地址
     if (!task->load(address_space)) {
       return false;
     }
@@ -509,15 +512,13 @@ bool find_libraries(android_namespace_t* ns,// caller的ns
       si->increment_ref_count();
     }
   }
-
-
   return true;  
 }
 
 ```
 find_libraries函数几乎包含了整个动态的加载阶段，它分了7步来加载动态，我们主要看下核心的一些步骤。
 
-## BFS寻找所有的依赖
+# 一、BFS寻找所有的依赖
 
 ```cpp
 // linker.cpp
@@ -528,7 +529,7 @@ static bool find_library_internal(android_namespace_t* ns, // 名称空间
                                   int rtld_flags) {
   soinfo* candidate;
 
-    // 看看当前的名称空间是否已经能访问到这个so。
+  // 看看当前的名称空间是否已经能访问到这个so。
   if (find_loaded_library_by_soname(ns, task->get_name(), true /* search_linked_namespaces */,
                                     &candidate)) {
     LD_LOG(kLogDlopen,
@@ -543,7 +544,7 @@ static bool find_library_internal(android_namespace_t* ns, // 名称空间
   LD_DEBUG(any, "[ \"%s\" find_loaded_library_by_soname failed (*candidate=%s@%p). Trying harder... ]",
            task->get_name(), candidate == nullptr ? "n/a" : candidate->get_realpath(), candidate);
 
-// 加载这个动态库
+  // 加载这个动态库
   if (load_library(ns, task, zip_archive_cache, load_tasks, rtld_flags,
                    true /* search_linked_namespaces */)) {
     return true;
@@ -625,6 +626,36 @@ static bool load_library(android_namespace_t* ns,
     return load_library(ns, task, load_tasks, rtld_flags, realpath, search_linked_namespaces);
   }
 
+  LD_LOG(kLogDlopen,
+         "load_library(ns=%s, task=%s, flags=0x%x, search_linked_namespaces=%d): calling "
+         "open_library",
+         ns->get_name(), name, rtld_flags, search_linked_namespaces);
+
+  // Open the file.
+  off64_t file_offset;
+  std::string realpath;
+  // 寻找到ELF文件并打开得到fd。
+  int fd = open_library(ns, zip_archive_cache, name, needed_by, &file_offset, &realpath);
+  if (fd == -1) {
+    if (task->is_dt_needed()) {
+      if (needed_by->is_main_executable()) {
+        DL_OPEN_ERR("library \"%s\" not found: needed by main executable", name);
+      } else {
+        DL_OPEN_ERR("library \"%s\" not found: needed by %s in namespace %s", name,
+                    needed_by->get_realpath(), task->get_start_from()->get_name());
+      }
+    } else {
+      DL_OPEN_ERR("library \"%s\" not found", name);
+    }
+    return false;
+  }
+// 将ELF文件的fd设置给task
+  task->set_fd(fd, true);
+  task->set_file_offset(file_offset);
+
+  return load_library(ns, task, load_tasks, rtld_flags, realpath, search_linked_namespaces);
+}
+
 
 static bool load_library(android_namespace_t* ns,
                          LoadTask* task,
@@ -636,7 +667,7 @@ static bool load_library(android_namespace_t* ns,
   const char* name = task->get_name();
   const android_dlextinfo* extinfo = task->get_extinfo();
 
-...
+  ...
   // Check for symlink and other situations where
   // file can have different names, unless ANDROID_DLEXT_FORCE_LOAD is set
   if (extinfo == nullptr || (extinfo->flags & ANDROID_DLEXT_FORCE_LOAD) == 0) {
@@ -710,7 +741,7 @@ static bool load_library(android_namespace_t* ns,
   soinfo* si = soinfo_alloc(ns, realpath.c_str(), &file_stat, file_offset, rtld_flags);
   // 将soinfo设置给加载任务
   task->set_soinfo(si);
-  // 注意：读取文件，创建ELFReader
+  // 注意：创建ELFReader，读取ELF文件.
   // Read the ELF header and some of the segments.
   if (!task->read(realpath.c_str(), file_stat.st_size)) {
     task->remove_cached_elf_reader();
@@ -753,6 +784,7 @@ static bool load_library(android_namespace_t* ns,
       const char* name = fix_dt_needed(elf_reader.get_string(d->d_un.d_val), elf_reader.name());
       LD_LOG(kLogDlopen, "load_library(ns=%s, task=%s): Adding DT_NEEDED task: %s",
              ns->get_name(), task->get_name(), name);
+      // 对依赖的库，创建一个LoadTask，并加入到load_tasks中。从而导致循环不结束。（BFS遍历算法）。
       load_tasks->push_back(LoadTask::create(name, si, ns, task->get_readers_map()));
     }
   }
@@ -773,6 +805,7 @@ soinfo* soinfo_alloc(android_namespace_t* ns, const char* name,
   soinfo* si = new (g_soinfo_allocator.alloc()) soinfo(ns, name, file_stat,
                                                        file_offset, rtld_flags);
 
+// 将soinfo增加到solist中
   solist_add_soinfo(si);
 // 生成handle
   si->generate_handle();
@@ -783,7 +816,7 @@ soinfo* soinfo_alloc(android_namespace_t* ns, const char* name,
 }
 
 ```
-### 读取ELF文件
+## 读取ELF文件
 
 ```cpp
 // linkerphdr.cpp
@@ -799,10 +832,10 @@ bool ElfReader::Read(const char* name, int fd, off64_t file_offset, off64_t file
 
   if (ReadElfHeader() && // 读取ELF文件头
       VerifyElfHeader() && // 验证ELF文件头
-      ReadProgramHeaders() && // 读取Phdrs
+      ReadProgramHeaders() && // 映射Phdrs
       CheckProgramHeaderAlignment() && // 对齐
-      ReadSectionHeaders() && // 映射Sections Headers
-      ReadDynamicSection() && // 兑取Dynamic段
+      ReadSectionHeaders() && // 映射Shdrs
+      ReadDynamicSection() && // 得到Dynamic信息
       ReadPadSegmentNote()) { // pad
     did_read_ = true;
   }
@@ -909,7 +942,7 @@ bool ElfReader::VerifyElfHeader() {
   return true;
 }
 
-// 将ELF文件中的 phdrs map到一个匿名内存块
+// 将ELF文件中的phdrs map到私有、只读、匿名内存块
 // Loads the program header table from an ELF file into a read-only private
 // anonymous mmap-ed block.
 bool ElfReader::ReadProgramHeaders() {
@@ -943,19 +976,47 @@ bool ElfReader::ReadProgramHeaders() {
   return true;
 }
 
+// 内存映射
+// fd: ELF文件的fd
+// base_offset: ELF问价本身的偏移
+// elf_offset: 要映射的区域本身在ELF文件中的区域。
+// size: 要映射的区域的大小
+//   
+//  VirtualMemory                 File
+// ....                            ...
+// 0x...5000                        10      // 需要的内存地址开始
+// 0x...5008                        18
+// ...                             ...
+// 0x...5128                       4128     // 需要被加载文件偏移开始
+// 0x...5130                       4130
+// 0x...5138                       4138
+// ...                             ...
+// 0x...6120                       5120     // 需要被加载的文件结束    
+// ...                             ...
+// 0x...6FFF                       ...      // 需要的内存地址结束
+//
 bool MappedFileFragment::Map(int fd, off64_t base_offset, size_t elf_offset, size_t size) {
   off64_t offset;
+  // 得到具体偏移，offset = base_offset + elf_offset
   CHECK(safe_add(&offset, base_offset, elf_offset));
 
+  // 因为mmap是按页来映射的，所以这里需要根据文件映射区域的起始位置和大小，计算需要的页大小。
+  // 计算这个偏移对应的页开始位置,比如假设PAGESIZE是4096（0x1000),偏移是0x4128，则得到0x4000
   off64_t page_min = page_start(offset);
   off64_t end_offset;
 
+  // 计算得到区域的结束位置
   CHECK(safe_add(&end_offset, offset, size));
+
+  // 补齐。比如偏移是0x4128,因为page_min为0x4000。如果仍然size来映射的话，可能得到的内存不够。
+  // 所以需要在给end_offset增加0x128。
   CHECK(safe_add(&end_offset, end_offset, page_offset(offset)));
 
+  // 得到需要的内存大小
   size_t map_size = static_cast<size_t>(end_offset - page_min);
   CHECK(map_size >= size);
 
+  // 将文件映射到内存
   uint8_t* map_start = static_cast<uint8_t*>(
                           mmap64(nullptr, map_size, PROT_READ, MAP_PRIVATE, fd, page_min));
 
@@ -963,14 +1024,35 @@ bool MappedFileFragment::Map(int fd, off64_t base_offset, size_t elf_offset, siz
     return false;
   }
 
+// 内存页开始位置
   map_start_ = map_start;
+// 内存页大小  
   map_size_ = map_size;
 
+  // 得到数据的开始位置指针
   data_ = map_start + page_offset(offset);
+  // 数据大小
   size_ = size;
 
   return true;
 }
+
+// Returns the address of the page containing address 'x'.
+inline uintptr_t page_start(uintptr_t x) {
+  return x & ~(page_size() - 1);
+}
+
+// Returns the offset of address 'x' in its page.
+inline uintptr_t page_offset(uintptr_t x) {
+  return x & (page_size() - 1);
+}
+
+// Returns the address of the next page after address 'x', unless 'x' is
+// itself at the start of a page.
+inline uintptr_t page_end(uintptr_t x) {
+  return page_start(x + page_size() - 1);
+}
+
 
 // 根据phdr中的p_align计算对齐
 bool ElfReader::CheckProgramHeaderAlignment() {
@@ -1025,7 +1107,7 @@ bool ElfReader::ReadSectionHeaders() {
     DL_ERR("\"%s\" shdr mmap failed: %m", name_.c_str());
     return false;
   }
-
+// 记录shdr表开始位置
   shdr_table_ = static_cast<const ElfW(Shdr)*>(shdr_fragment_.data());
   return true;
 }
@@ -1036,6 +1118,7 @@ bool ElfReader::ReadDynamicSection() {
   const ElfW(Shdr)* dynamic_shdr = nullptr;
   for (size_t i = 0; i < shdr_num_; ++i) {
     if (shdr_table_[i].sh_type == SHT_DYNAMIC) {
+      // 记录dynamic_shdr
       dynamic_shdr = &shdr_table_ [i];
       break;
     }
@@ -1046,6 +1129,7 @@ bool ElfReader::ReadDynamicSection() {
     return false;
   }
 
+// 校验shdr中描述的dynamic节的偏移和phdr中描述dynamic开始位置是一致且大小一致
   // Make sure dynamic_shdr offset and size matches PT_DYNAMIC phdr
   size_t pt_dynamic_offset = 0;
   size_t pt_dynamic_filesz = 0;
@@ -1086,6 +1170,7 @@ bool ElfReader::ReadDynamicSection() {
     return false;
   }
 
+// 找到字符串表
   const ElfW(Shdr)* strtab_shdr = &shdr_table_[dynamic_shdr->sh_link];
 
   if (strtab_shdr->sh_type != SHT_STRTAB) {
@@ -1098,12 +1183,12 @@ bool ElfReader::ReadDynamicSection() {
     DL_ERR_AND_LOG("\"%s\" has invalid offset/size of .dynamic section", name_.c_str());
     return false;
   }
-
+// 将dynamic节映射到内存
   if (!dynamic_fragment_.Map(fd_, file_offset_, dynamic_shdr->sh_offset, dynamic_shdr->sh_size)) {
     DL_ERR("\"%s\" dynamic section mmap failed: %m", name_.c_str());
     return false;
   }
-
+// 找到到dynamic节
   dynamic_ = static_cast<const ElfW(Dyn)*>(dynamic_fragment_.data());
 
   if (!CheckFileRange(strtab_shdr->sh_offset, strtab_shdr->sh_size, alignof(const char))) {
@@ -1111,33 +1196,52 @@ bool ElfReader::ReadDynamicSection() {
                    name_.c_str());
     return false;
   }
-
+// 将字符串映射到内存
   if (!strtab_fragment_.Map(fd_, file_offset_, strtab_shdr->sh_offset, strtab_shdr->sh_size)) {
     DL_ERR("\"%s\" strtab section mmap failed: %m", name_.c_str());
     return false;
   }
-
+// 找到了字符串
   strtab_ = static_cast<const char*>(strtab_fragment_.data());
   strtab_size_ = strtab_fragment_.size();
   return true;
 }
 ```
 
-## 加载so
+这里读取了ELF文件的基本信息并完成了校验。并且将Phdr、Shdr、dynamic节、strtab节等映射到了内存，并记录到了ELFReader中的变量。
+
+# 二、加载动态库
+
+{% mermaid zenuml %}
+
+    participant A
+    participant B
+
+
+{% endmermaid %}
+
+```mermaid 
+   zenuml
+
+    participant A
+    participant B
+
+
+```
 
 ```cpp
   bool load(address_space_params* address_space) {
     ElfReader& elf_reader = get_elf_reader();
-    // 加载程序
+    // 加载动态库，address_space用来指导内存的分配
     if (!elf_reader.Load(address_space)) {
       return false;
     }
-// 向ELF文件中load_bias,phdr初始地址等赋值到soinfo中
-    si_->base = elf_reader.load_start();
-    si_->size = elf_reader.load_size();
+// 将elf_reader中的load_bias,phdr初始地址等赋值到soinfo中。
+    si_->base = elf_reader.load_start(); // 内存页的起始位置
+    si_->size = elf_reader.load_size();  // 需要的内存大小
     si_->set_mapped_by_caller(elf_reader.is_mapped_by_caller());
-    si_->load_bias = elf_reader.load_bias();
-    si_->phnum = elf_reader.phdr_count();
+    si_->load_bias = elf_reader.load_bias(); // 这个库的基地址
+    si_->phnum = elf_reader.phdr_count(); 
     si_->phdr = elf_reader.loaded_phdr();
     si_->set_gap_start(elf_reader.gap_start());
     si_->set_gap_size(elf_reader.gap_size());
@@ -1151,6 +1255,8 @@ bool ElfReader::ReadDynamicSection() {
     return true;
   }
 
+// linker_phdr.cpp
+// 将程序加载到指定内存位置
 bool ElfReader::Load(address_space_params* address_space) {
   CHECK(did_read_);
   if (did_load_) {
@@ -1158,6 +1264,7 @@ bool ElfReader::Load(address_space_params* address_space) {
   }
   // 根据ELF文件可加载段的大小，预留内存位置
   bool reserveSuccess = ReserveAddressSpace(address_space);
+  // 加载Segments
   if (reserveSuccess && LoadSegments() && FindPhdr() &&
       FindGnuPropertySection()) {
     did_load_ = true;
@@ -1181,11 +1288,13 @@ bool ElfReader::Load(address_space_params* address_space) {
   return did_load_;
 }  
 
+// 预留一个能够容纳所有可加载段（loadable segments）的内存
 // Reserve a virtual address range big enough to hold all loadable
 // segments of a program header table. This is done by creating a
 // private anonymous mmap() with PROT_NONE.
 bool ElfReader::ReserveAddressSpace(address_space_params* address_space) {
   ElfW(Addr) min_vaddr;
+
   // 计算需要的内存大小
   load_size_ = phdr_table_get_load_size(phdr_table_, phdr_num_, &min_vaddr);
   if (load_size_ == 0) {
@@ -1204,8 +1313,9 @@ bool ElfReader::ReserveAddressSpace(address_space_params* address_space) {
   uint8_t* addr = reinterpret_cast<uint8_t*>(min_vaddr);
   void* start;
 
+// 默认reserved_size是0，所以这个条件必然满足
   if (load_size_ > address_space->reserved_size) {
-    if (address_space->must_use_address) {
+    if (address_space->must_use_address) { // 默认是false
       DL_ERR("reserved address space %zd smaller than %zd bytes needed for \"%s\"",
              load_size_ - address_space->reserved_size, load_size_, name_.c_str());
       return false;
@@ -1216,9 +1326,8 @@ bool ElfReader::ReserveAddressSpace(address_space_params* address_space) {
       // bits available for ASLR for no benefit.
       start_alignment = max_align_ == kPmdSize ? kPmdSize : page_size();
     }
-    // 预留内存位置，并获得内存的起始位置
-    start = ReserveWithAlignmentPadding(load_size_, kLibraryAlignment, start_alignment, &gap_start_,
-                                        &gap_size_);
+    // 预留内存位置，并获得内存的起始位置。
+    start = ReserveWithAlignmentPadding(load_size_, kLibraryAlignment, start_alignment, &gap_start_, &gap_size_);
     if (start == nullptr) {
       DL_ERR("couldn't reserve %zd bytes of address space for \"%s\"", load_size_, name_.c_str());
       return false;
@@ -1235,7 +1344,7 @@ bool ElfReader::ReserveAddressSpace(address_space_params* address_space) {
   }
 // 内存的起始位置
   load_start_ = start;
-// 程序的基地址  
+// 得到程序的基地址  
   load_bias_ = reinterpret_cast<uint8_t*>(start) - addr;
 
   if (should_use_16kib_app_compat_) {
@@ -1248,6 +1357,7 @@ bool ElfReader::ReserveAddressSpace(address_space_params* address_space) {
 }
 
 // 计算出程序需要的地址空间大小，按页对齐。
+// 遍历ELF文件中的所有PT_LOAD段，计算出最低地址和最高地址，即可以知道需要的内存大小。
 /* Returns the size of the extent of all the possibly non-contiguous
  * loadable segments in an ELF program header table. This corresponds
  * to the page-aligned size in bytes that needs to be reserved in the
@@ -1284,8 +1394,9 @@ size_t phdr_table_get_load_size(const ElfW(Phdr)* phdr_table, size_t phdr_count,
   if (!found_pt_load) {
     min_vaddr = 0;
   }
-
+// 需要的内存页起始位置
   min_vaddr = page_start(min_vaddr);
+// 需要的内存页结束位置
   max_vaddr = page_end(max_vaddr);
 
   if (out_min_vaddr != nullptr) {
@@ -1305,7 +1416,8 @@ static void* ReserveWithAlignmentPadding(size_t size, size_t mapping_align, size
   int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS; // 私有匿名内存
   // Reserve enough space to properly align the library's start address.
   mapping_align = std::max(mapping_align, start_align);
-  if (mapping_align == page_size()) {
+  if (mapping_align == page_size()) { //  假设命中这里的条件，直接用mmap预留内存。内存权限为：PROT_NONE
+  // 这里得到的地址是随机的，默认会受到 ASLR (Address Space Layout Randomization) 的影响。
     void* mmap_ptr = mmap(nullptr, size, PROT_NONE, mmap_flags, -1, 0);
     if (mmap_ptr == MAP_FAILED) {
       return nullptr;
@@ -1377,7 +1489,7 @@ static void* ReserveWithAlignmentPadding(size_t size, size_t mapping_align, size
   return start;
 }
 
-// 加载程序
+// 加载Segments
 bool ElfReader::LoadSegments() {
   // NOTE: The compat(legacy) page size (4096) must be used when aligning
   // the 4KiB segments for loading in compat mode. The larger 16KiB page size
@@ -1398,10 +1510,11 @@ bool ElfReader::LoadSegments() {
     DL_ERR("\"%s\" failed to setup 16KiB App Compat", name_.c_str());
     return false;
   }
-// 遍历所有的段头
+// 遍历所有的段头，phdrs、shdrs、strtab、dynamic在BFS遍历find_library的时候已经映射到了内存。
   for (size_t i = 0; i < phdr_num_; ++i) {
     const ElfW(Phdr)* phdr = &phdr_table_[i];
 
+// 只读取loadable segments
     if (phdr->p_type != PT_LOAD) {
       continue;
     }
@@ -1411,19 +1524,22 @@ bool ElfReader::LoadSegments() {
     _extend_load_segment_vma(phdr_table_, phdr_num_, i, &p_memsz, &p_filesz, should_pad_segments_,
                              should_use_16kib_app_compat_);
 
-// 增加load_bias,即将相对地址变为绝对地址
+// 增加load_bias, 即将相对地址变为绝对地址
+// 前面已经用mmap预留了内存，这里根据phdr中的内存相对地址+load_bias_即即可得到该段应该放到内存的什么区域。
     // Segment addresses in memory.
     ElfW(Addr) seg_start = phdr->p_vaddr + load_bias_;
     ElfW(Addr) seg_end = seg_start + p_memsz;
 
+// 按页向上对齐
     ElfW(Addr) seg_page_end = __builtin_align_up(seg_end, seg_align);
 
     ElfW(Addr) seg_file_end = seg_start + p_filesz;
 
+// 得到该段的文件偏移和大小信息
     // File offsets.
     ElfW(Addr) file_start = phdr->p_offset;
     ElfW(Addr) file_end = file_start + p_filesz;
-
+// 按页向下对齐
     ElfW(Addr) file_page_start = __builtin_align_down(file_start, seg_align);
     ElfW(Addr) file_length = file_end - file_page_start;
 
@@ -1442,8 +1558,10 @@ bool ElfReader::LoadSegments() {
     }
 
     if (file_length != 0) {
+      // 根据段信息中描述的权限信息，写内存页的权限
       int prot = PFLAGS_TO_PROT(phdr->p_flags);
       if ((prot & (PROT_EXEC | PROT_WRITE)) == (PROT_EXEC | PROT_WRITE)) {
+        // target 26后, load segemnts不能同时可写、可执行。
         if (DL_ERROR_AFTER(26, "\"%s\" has load segments that are both writable and executable",
                            name_.c_str())) {
           return false;
@@ -1457,7 +1575,7 @@ bool ElfReader::LoadSegments() {
           return false;
         }
       } else {
-        // 将对应的端往指定的位置上映射
+        // 将对应的段往指定的位置上映射
         if (!MapSegment(i, file_length)) {
           return false;
         }
@@ -1474,6 +1592,7 @@ bool ElfReader::LoadSegments() {
   }
   return true;
 }
+
 // 将Segment对应的文件内容往指对应phdr指定的内存地址上进行映射
 bool ElfReader::MapSegment(size_t seg_idx, size_t len) {
   const ElfW(Phdr)* phdr = &phdr_table_[seg_idx];
@@ -1486,7 +1605,7 @@ bool ElfReader::MapSegment(size_t seg_idx, size_t len) {
 
   int prot = PFLAGS_TO_PROT(phdr->p_flags);
 
-// 这里将对应的段，映射到指定的内存上
+// 这里将对应的段，映射到指定的内存上, MAP_FIXED 为固定内存映射
   void* seg_addr = mmap64(start, len, prot, MAP_FIXED | MAP_PRIVATE, fd_, offset);
 
   if (seg_addr == MAP_FAILED) {
@@ -1503,7 +1622,7 @@ bool ElfReader::MapSegment(size_t seg_idx, size_t len) {
   return true;
 }
 
-// 位bss节，分配内存
+// 为bss节分配内存
 bool ElfReader::MapBssSection(const ElfW(Phdr)* phdr, ElfW(Addr) seg_page_end,
                               ElfW(Addr) seg_file_end) {
   // NOTE: We do not need to handle .bss in 16KiB compat mode since the mapping
@@ -1538,7 +1657,9 @@ bool ElfReader::MapBssSection(const ElfW(Phdr)* phdr, ElfW(Addr) seg_page_end,
 }
 ```
 
-# 预链接
+# 三、预链接
+
+这里读取dynamic中的信息将符号表信息、重定位（rela）节、构造器、hash节、字符串节等信息的地址提前计算出来记录到soinfo中。
 
 ```cpp
 // An empty list of soinfos
@@ -1549,6 +1670,7 @@ bool soinfo::prelink_image(bool dlext_use_relro) {
   /* Extract dynamic section */
   ElfW(Word) dynamic_flags = 0;
   // 获取PT_DYNAMIC段的地址和flags
+  // PT_DYNAMIC：描述的是 .dynamic 段的信息，本身通常也位于 某个 PT_LOAD segment 里面。
   phdr_table_get_dynamic_section(phdr, phnum, load_bias, &dynamic, &dynamic_flags);
 ...
 
@@ -2067,7 +2189,7 @@ void phdr_table_get_dynamic_section(const ElfW(Phdr)* phdr_table, size_t phdr_co
 }
 ```
 
-# 链接
+# 四、链接
 
 ```cpp
 bool soinfo::link_image(const SymbolLookupList& lookup_list, soinfo* local_group_root,
@@ -2155,6 +2277,7 @@ bool soinfo::link_image(const SymbolLookupList& lookup_list, soinfo* local_group
 
   ++g_module_load_counter;
   notify_gdb_of_load(this);
+  // 标记当前的so已经link了。
   set_image_linked();
   return true;
 }
@@ -2174,11 +2297,10 @@ bool soinfo::relocate(const SymbolLookupList& lookup_list) {
     return false;
   }
 
-// 创建一个“重定位器”，将version_tracker和lookup_list传给它，它将负责符号的重定位】
-‘’‘’
+// 创建一个“重定位器”，将version_tracker和lookup_list传给它，它将负责符号的重定位
   Relocator relocator(version_tracker, lookup_list);
   relocator.si = this;
-  // 给它甚至字符表
+  // 给它设置字符表
   relocator.si_strtab = strtab_;
   relocator.si_strtab_size = is_lp64_or_has_min_version(1) ? strtab_size_ : SIZE_MAX;
   // 设置符号表
@@ -2278,7 +2400,7 @@ static bool plain_relocate(Relocator& relocator, Args ...args) {
 template <RelocMode Mode>
 __attribute__((noinline))
 static bool plain_relocate_impl(Relocator& relocator, rel_t* rels, size_t rel_count) {
-  for (size_t i = 0; i < rel_count; ++i) {
+  for (size_t i = 0; i < rel_count; ++i) { // for循环遍历所有重定位表项，进行重定位
     if (!process_relocation<Mode>(relocator, rels[i])) {
       return false;
     }
@@ -2435,6 +2557,7 @@ static bool process_relocation_impl(Relocator& relocator, const rel_t& reloc) {
                                              found_in == relocator.si &&
                                              ELF_ST_TYPE(sym->st_info) == STT_GNU_IFUNC;
         if (should_protect_segments && !protect_segments()) return false;
+        // 找到符号后，resolve出它的地址。
         sym_addr = found_in->resolve_symbol_address(sym);
         if (should_protect_segments && !unprotect_segments()) return false;
       } else if constexpr (IsGeneral) {
@@ -2689,6 +2812,7 @@ static bool process_relocation_impl(Relocator& relocator, const rel_t& reloc) {
 
 ```
 ### 符号查找
+
 ```cpp
 template <bool DoLogging>
 __attribute__((always_inline))
@@ -2700,17 +2824,17 @@ static inline bool lookup_symbol(Relocator& relocator, uint32_t r_sym, const cha
     *sym = relocator.cache_sym;
     count_relocation_if<DoLogging>(kRelocSymbolCached);
   } else {
-    // 获取版本信息
+    // 如果有版本信息的话，获取版本信息
     const version_info* vi = nullptr;
     if (!relocator.si->lookup_version_info(relocator.version_tracker, r_sym, sym_name, &vi)) {
       return false;
     }
 
-// 便利所有的lib查找符号
+// 遍历所有的lib查找符号
     soinfo* local_found_in = nullptr;
     const ElfW(Sym)* local_sym = soinfo_do_lookup(sym_name, vi, &local_found_in, relocator.lookup_list);
 
-// 将查找到的信息返回出去
+// 把找到的结果缓存一下，并将查找到的信息返回出去
     relocator.cache_sym_val = r_sym;
     relocator.cache_si = local_found_in;
     relocator.cache_sym = local_sym;
@@ -2719,7 +2843,7 @@ static inline bool lookup_symbol(Relocator& relocator, uint32_t r_sym, const cha
   }
 
   if (*sym == nullptr) { 
-    // 如果没有找到，并且符号类型不是弱符号，则查找失败
+    // 如果没有找到，并且符号类型不是弱符号则查找失败
     if (ELF_ST_BIND(relocator.si_symtab[r_sym].st_info) != STB_WEAK) {
       DL_ERR("cannot locate symbol \"%s\" referenced by \"%s\"...", sym_name, relocator.si->get_realpath());
       return false;
@@ -2854,7 +2978,7 @@ inline bool is_symbol_global_and_defined(const soinfo* si, const ElfW(Sym)* s) {
 ```
 
 
-# 调用构造器
+# 五、调用构造器
 
 ```cpp
 void soinfo::call_constructors() {
