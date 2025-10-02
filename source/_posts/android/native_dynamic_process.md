@@ -1212,22 +1212,7 @@ bool ElfReader::ReadDynamicSection() {
 
 # 二、加载动态库
 
-{% mermaid zenuml %}
-
-    participant A
-    participant B
-
-
-{% endmermaid %}
-
-```mermaid 
-   zenuml
-
-    participant A
-    participant B
-
-
-```
+<img src="/images/android/native_dynamic_so_load.png" alt="LoadTask_load" width="720">
 
 ```cpp
   bool load(address_space_params* address_space) {
