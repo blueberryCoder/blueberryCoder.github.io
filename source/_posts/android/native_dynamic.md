@@ -14,8 +14,9 @@ Android开发中涉及Native（C/C++等）程序、接入外部动态库、处�
 # 动态库与位置⽆关代码
 
 ## 共享库
-使用一些高级语言（C/C++）最终编译后产物是二进制文件。我们通常引用第三方库，会使用它的动态共享库。同时我们自己开发的二方库本身时也可能以来其他的共享库，也可能给别人提供共享库。
-同时我们为了代码复用，多个Module复用同样的代码时，我们可以将这些代码剥离处理做成一个共享库供其使用。
+使用一些高级语言（C/C++）最终编译后产物是二进制文件。我们通常引用第三方库，会使用它的动态共享库。同时我们自己开发的二方库本身时也可能依赖其他的共享库，我们也可能给别人提供共享库。
+
+我们为了代码复用，多个Module复用同样的代码时，我们可以将这些代码剥离处理做成一个共享库供其使用。
 <img src="/images/android/native_shared_library.png" alt="shared_library" width="720">
 共享库又分为静态库库和动态共享库。
 
@@ -29,7 +30,7 @@ Android开发中涉及Native（C/C++等）程序、接入外部动态库、处�
 
 ## 位置无关代码
 因为动态库是要运行时动态加载，其加载位置即运行时地址是不固定的。因此需要保证代码时位置无关的(PIC, Position Idependent Code)。
-为了接下来的演示，我们在Android Arm64平台写下如下代码:
+为了接下来的演示，我在Android Arm64平台写下如下代码:
 ```c++
 #include <jni.h>
 #include <string>
@@ -97,8 +98,9 @@ Java_com_blueberry_anative_MainActivity_stringFromJNI(
 ```asm
 1dca0:	14000002 	b	1dca8 <SayHelloWrapper+0x3c>
 ```
-这条指令对应的汇编语言是跳转到1dca8地址，即当前指令地址+2的位置，这里+2的单位是指令长度。虽然反汇编的结果是直接指向这个地址值，但它的指令其实用的是相对偏移。这一点从它的机器码的地位其实可以看出端倪（它的末尾是2）。另外这些指令的地址都是相对地址并不是动态库被加载后的运行时的地址。运行时的真实地址是BASE+这里的相对地址。BASE为加载动态库时系统分配基地址。
-这里的指令集时AArch64指令集，其中b指令的格式为：
+这条指令对应的汇编语言是跳转到1dca8地址，即当前指令地址+2的位置，这里+2的单位是指令长度。虽然反汇编的结果是直接指向这个地址值，但它的指令其实用的是相对偏移。这一点从它的机器码的地位其实可以看出端倪（它的末尾是2）。另外这些指令的地址都是相对地址并不是动态库被加载后的运行时的地址。运行时的真实地址是基地址(load_bias)+这里的相对地址。load_bias为加载动态库后的执行段的起始地址。
+
+这里的指令集是AArch64指令集，其中b指令的格式为：
 ```
 31  30........5    0
 |  opcode=000101   | imm26 |
@@ -138,7 +140,7 @@ Java_com_blueberry_anative_MainActivity_stringFromJNI(
    424fc:	d61f0220 	br	x17
 ...
 ```
-可以看到地址00000000000424f0对应的代码段，它只有4条指令。这段代码通常被称为“蹦床（trampoline"或跳板函数(stubs)。下面我们逐行解释写这段代码。
+可以看到地址00000000000424f0对应的代码段，它只有4条指令。这段代码通常被称为“蹦床（trampoline"或跳板函数(stubs)。下面我们逐行解释下这段代码。
 
 ```asm
 ...
@@ -147,15 +149,17 @@ Java_com_blueberry_anative_MainActivity_stringFromJNI(
    424f0:	b0000030 	adrp	x16, 47000 <_ZTVSt9bad_alloc@@Base+0x740>
    // 将x16寄存器的值+88得到的地址存放到x17寄存器。（即got表中这个函数对应的slot地址）
    424f4:	f9402e11 	ldr	x17, [x16, #88]
-   // 将x16寄存器的值自加0x58也就是十进制88,（也即got表中这个函数对应的slot地址）用户之后的resolve回填函数地址。
+   // 将x16寄存器的值加0x58也就是十进制88,（即got表中这个函数对应的slot地址）用户之后的resolve回填函数地址。
    424f8:	91016210 	add	x16, x16, #0x58
    // 跳转到x17中存放的地址（即got表中对应的地址）。
    424fc:	d61f0220 	br	x17
 ...
 ```
-上面的代码首先会找到GOT表的基地址，然后加上当前函数对应在got表slot槽的偏移。然后望这个slot对应的地址跳转，并且用x16保存了slot的地址。x16存放的是slot的地址，x17存放的是slot中值。slot中存放的值是目标函数的地址（假设已经完成延时绑定的话），即printf函数的地址。
-下面我们来看got表的信息，着重也看got表0x58偏移对应的内容（got表的基地址为0x47000）。
+上面的代码首先会找到GOT表的基地址，然后加上当前函数对应在got表slot槽的偏移。然后往这个slot对应的地址跳转，并且用x16保存了slot的地址。即x16存放的是slot的地址，x17存放的是slot中值。slot中存放的值是目标函数的地址即printf函数的地址（假设已经完成延时绑定的话）。
+
+下面我们来看got表的信息，着重看got表0x58偏移对应的内容（got表的基地址为0x47000）。
 因为.got.plt是数据段，我们用`objdump -s -j .got -j .got.plt libanative.so`来查看：
+
 .got用来保存全局变量引用的地址，.got.plt用来保存函数引用的地址。
 
 ```asm
@@ -192,20 +196,22 @@ Contents of section .got.plt:
  47090 90240400 00000000 90240400 00000000  .$.......$......
  470a0 90240400 00000000 90240400 00000000  .$.......$......
 ```
-我们可以看到这个数据是以小端方式排列的，并且一行显示16字节，那么0x47000 + 0x58对应的槽的就在数据的第4行第3列。
+最左边一列是数据的地址，后面的4列是数据，数据是以小端方式排列的。一行显示16字节，那么0x47000 + 0x58对应的槽的就在数据的第4行第3列。
 它的值为90240400 00000000，另外我们可以看到got表中前0x47038前的都是0，后面每个槽的值都是90240400 00000000。（这里每个槽都是8个字节）。
 
-这里是因为，GOT表中的前3个槽都时预留的不给我们的代码使用，后续的槽默认都PLT0(PLT表的基地址)。
-具体来讲，动态库被加载后动态加载器会给他们赋值：
+这里是因为，GOT表中的前几个槽都时预留的不给我们的代码使用，后续的槽默认都PLT0(PLT表的基地址)。
 
-GOT[0]:保存的是 .dynamic 段的地址（即动态段的起始地址）。动态链接器 ld.so 启动时会用这个地址来获取需要解析的动态信息，比如 .dynsym、.dynstr、.rel.plt等表。
+具体来讲，我通过查资料得到在linux系统中动态库被加载后动态加载器会给他们赋值：
 
-GOT[1]:保存的是 linker/loader 的解析函数地址，即 _dl_runtime_resolve（或平台相关的 resolver stub）。当你第一次调用某个外部函数时，PLT entry 会跳到GOT[1]指向的解析器。解析器会根据GOT[2] + 槽地址找到具体要解析的符号，然后去加载对应的动态库函数地址。
+GOT[0]:保存的是.dynamic段的地址（即动态段的起始地址）。动态链接器ld.so启动时会用这个地址来获取需要解析的动态信息，比如 .dynsym、.dynstr、.rel.plt等表。
 
-GOT[2]:保存的是 link_map 结构体指针，这是动态链接器内部维护的 ELF 链接状态表（每个已加载的共享对象有一个 link_map 节点）。_dl_runtime_resolve 通过GOT[2]能够知道“当前进程有哪些已加载的库”，从而去符号查找、重定位。
+GOT[1]:保存的是linker/loader的解析函数地址，即_dl_runtime_resolve（或平台相关的 resolver stub）。当你第一次调用某个外部函数时，PLT entry会跳到GOT[1]指向的解析器。解析器会根据GOT[2]+槽地址找到具体要解析的符号，然后去加载对应的动态库函数地址。
 
-GOT[6]:47030地址，会存放解析器（_dl_runtime_resolve）的地址。
+GOT[2]:保存的是link_map 结构体指针，这是动态链接器内部维护的ELF链接状态表（每个已加载的共享对象有一个link_map节点）。_dl_runtime_resolve通过GOT[2]能够知道“当前进程有哪些已加载的库”，从而去符号查找、重定位。
+
+但通过我们这个Android平台的so文件，我发现GOT[6]（这个例子中就是地址0x47030）应该存储的是linker/loader的解析函数地址，即_dl_runtime_resolve。
 另外我们也可以通过readelf查看槽位的属性：
+
 ```
 $ readelf -r libanative.so
 
@@ -222,7 +228,7 @@ Relocation section '.rela.plt' at offset 0x11d88 contains 122 entries:
 我们可以看到printf函数对应的槽信息，它的类型为：R_AARCH64_JUMP_SLOT 表示“这个 GOT 条目需要在运行时被填充成目标函数的真实地址”。
 
 90240400 00000000 因为是小端存储的，所以对应的值是：0x402490，它就是PLT0的地址。
-我们使用`objdump -d -j .plt libanative.so`重新来看.plt表来验证。
+我们使用`objdump -d -j .plt libanative.so`来看.plt表来验证。
 ```asm
 // PLT 表头（PLT0）
 0000000000042490 <__cxa_finalize@plt-0x20>:
@@ -230,7 +236,7 @@ Relocation section '.rela.plt' at offset 0x11d88 contains 122 entries:
    42490:	a9bf7bf0 	stp	x16, x30, [sp, #-16]!
 // x16 = .got.plt 所在页基址   
    42494:	b0000030 	adrp	x16, 47000 <_ZTVSt9bad_alloc@@Base+0x740>
-// x17 = [.got.plt + 0x30（48）]（解析器入口指针）   
+// x17 = [.got.plt + 0x30（48）]（解析器入口指针 _dl_runtime_resolve）   
    42498:	f9401a11 	ldr	x17, [x16, #48]
 // x16 =  .got.plt + 0x30（把“当前槽地址”传给解析器）   
    4249c:	9100c210 	add	x16, x16, #0x30
@@ -243,13 +249,11 @@ Relocation section '.rela.plt' at offset 0x11d88 contains 122 entries:
 ...
 
 ```
-从上面的分析，我们得到我们在第一次调用print这个外部函数时，由于GOT表中的条目是只想PLT0，所以我们最终调用了_dl_runtime_resolve函数。 
+从上面的分析，我们得到我们在第一次调用print这个外部函数时，由于GOT表中的条目是指向PLT0，所以我们最终调用了_dl_runtime_resolve函数。 
 
-_dl_runtime_resolve因为知道GOT表的槽（保存在x16寄存器的槽位置）从而通过.rela.plt也能知道我们调用的函数的符号信息，找到对应的外部函数的地址。然后执行，并且将查到的地址写入到我们槽。那么下次再调用这个函数就不用再执行解析操作了。
+_dl_runtime_resolve因为知道GOT表的槽（保存在x16寄存器的槽位置）并且通过.rela.plt也能知道我们调用的函数的符号信息，找到对应的外部函数的地址。然后执行，并且将查到的地址写入到我们槽。那么下次再调用这个函数就不用再执行解析操作了。这个机制也叫延时绑定机制(lazy binding)。
 
-这个机制也叫延时绑定机制(lazy binding)
-
-_dl_runtime_resolve是一个glic中的一个汇编段，它在dl-trampoline.S文件中，它的大致实现为：
+_dl_runtime_resolve是一个glibc中的一个汇编段，它在dl-trampoline.S文件中。 它的大致实现为：
 ```asm
 
 /* RELA relocatons are 3 pointers */
@@ -285,7 +289,7 @@ _dl_runtime_resolve:
 
 # ELF文件格式
 
-ELF（Executable and Linkable Format）文件是linux平台使用的一个二进制文件格式。我们平时的.o文件(可重定位文件)、so文件、可执行文件、coredump文件都是ELF文件格式。
+ELF（Executable and Linkable Format）常见发音：(/ɛlf/)，elf的中文意义也有小精灵、精灵族的意思。ELF文件是linux平台使用的一个二进制文件格式。我们平时的.o文件(可重定位文件)、so文件、可执行文件、coredump文件都是ELF文件格式。
 
 <img src="/images/android/native_elf_brief.png" alt="elf_brief" width="720">
 
@@ -366,8 +370,9 @@ ELF Header:
   Number of section headers:         34
   Section header string table index: 32
 ```
-文件头信息中，多数信息是固定不变的（Margic、Version、Machine等）。所以我们重点关注下e_phoff 、 e_shoff 、 e_phnum 、 e_shnum 、 e_shstrndx这些值。这几个字段描述了3类信息：Section头、Program头、字符串。
-Section和Program对这个文件的两种不同视角的描述，Section为不加载的情况下的静态分析视角、Pragma描述的是文件加载后的运行时视角。
+文件头信息中，多数信息是固定不变的（Margic、Version、Machine等）。所以我们重点关注下e_phoff 、 e_shoff 、 e_phnum 、 e_shnum 、 e_shstrndx这些值。这几个字段描述了三类信息：Section头、Program头、字符串。
+
+Section和Program是对这个文件的两种不同视角的描述，Section为不加载的情况下的静态分析视角、Pragma描述的是文件加载后的运行时视角。
 
 ## Shdr
 Section Header, ELF文件中的代码(code)、数据(data)分为了一些连续的块。Section Header就是描述这些块的名称、类型、在文件中的偏移、被加载后的虚拟地址（应该被加载在什么地方）、大小等。为了节省篇幅，我后续只贴出64位的数据结构。
@@ -541,11 +546,11 @@ RTLD_* 是一组 动态加载标志（flags），用于 dlopen() 这个函数。
 - .rel.plt
 函数可重定位表。
 - .eh_frame
-发生crash后，用于栈展开。
+发生crash后，用于栈展开（unwind）。
 
 为了加载可执行文件，我们需要以不同的方式组织code和data，所有ELF有另一种逻辑视图（运行视图），它叫做segments，它用在运行时。相对应的上面讲的Section它可能用在静态链接时，以及我们用工具分析二进制文件时。
 
-所有理论上Section信息时，在运行时是可选的（我分析binonic时，如果有section 信息，加载器也会读取）。程序通过Pragma header就可以知道如何去加载这个ELF文件到内存中。
+所有理论上Section信息时，在运行时是可选的（我分析bionic时，如果有section 信息，加载器也会读取）。程序通过Pragma header就可以知道如何去加载这个ELF文件到内存中。
 
 ## Phdr
 与Shdr相对，Phdr是提供segments视图(运行视图)，它给操作系统或动态链接器（dynamic-linker）提供了如何去加载这个程序的信息。与之相对的Shdr可以看作是提供给程序静态链接用的。
@@ -874,7 +879,7 @@ static std::pair<uint32_t, uint32_t> calculate_gnu_hash_simple(const char* name)
 需要注意的是，只有 .dynsym 有hash表， .symtab 是没有hash表只能遍历查找。
 
 # 重定位
-前文讲到调用外部函数时，会获取GOT表槽中的值作为地址然后挑战过去，而这个地址在编译时无法确定，所以运行时会被dynamic linker设置位真正的函数地址。这个给GOT表设置真实地址的过程就叫做重定位。
+前文讲到调用外部函数时，会获取GOT表槽中的值作为地址然后跳转过去，而这个地址在编译时无法确定，所以运行时会被dynamic linker设置位真正的函数地址。这个给GOT表设置真实地址的过程就叫做重定位。
 
 ## 重定位信息
 
@@ -919,7 +924,7 @@ info中包含了类型、符号信息。其中符号就是上文提到的.dynsym
 指定一个常量加数，用于计算写入可重定位字段的最终值。
 
 ## 重定位表
-可以通过 `sh readelf -S libanative.so ` 查看重定位表的信息。
+可以通过 `readelf -S libanative.so ` 查看重定位表的信息。
 
 ```sh
 ➜  arm64-v8a readelf -S libanative.so
@@ -941,7 +946,7 @@ Section Headers:
   ...
 ```
 其中.rela.plt 存放函数跳转相关的R_AARCH64_JUMP_SLOT类型的重定位信息。.rela.dyn存放非函数跳转相关的其他类型重定位信息。
-可以通过`sh readelf -rW libanative.so ` 工具重新打印重定位表。
+可以通过`readelf -rW libanative.so ` 工具重新打印重定位表。
 
 ```sh
 ➜  arm64-v8a readelf -rW libanative.so
