@@ -143,7 +143,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1237,104 +1237,6 @@ class="math display"><em>V</em> = <em>C</em><sub>max</sub>.</span></p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">vec3</span> rgb2hsv(<span class="type">vec3</span> c)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">vec4</span> K = <span class="type">vec4</span>(<span class="number">0.0</span>, <span class="number">-1.0</span>/<span class="number">3.0</span>, <span class="number">2.0</span>/<span class="number">3.0</span>, <span class="number">-1.0</span>);</span><br><span class="line">    <span class="type">vec4</span> p = <span class="built_in">mix</span>(<span class="type">vec4</span>(c.bg, K.wz), <span class="type">vec4</span>(c.gb, K.xy), <span class="built_in">step</span>(c.b, c.g));</span><br><span class="line">    <span class="type">vec4</span> q = <span class="built_in">mix</span>(<span class="type">vec4</span>(p.xyw, c.r), <span class="type">vec4</span>(c.r, p.yzx), <span class="built_in">step</span>(p.x, c.r));</span><br><span class="line">    <span class="type">float</span> d = q.x - <span class="built_in">min</span>(q.w, q.y);</span><br><span class="line">    <span class="type">float</span> e = <span class="number">1.0e-10</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="type">vec3</span>(<span class="built_in">abs</span>(q.z + (q.w - q.y) / (<span class="number">6.0</span> * d + e)), d / (q.x + e), q.x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">vec3</span> hsv2rgb(<span class="type">vec3</span> c)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">vec4</span> K = <span class="type">vec4</span>(<span class="number">1.0</span>, <span class="number">2.0</span>/<span class="number">3.0</span>, <span class="number">1.0</span>/<span class="number">3.0</span>, <span class="number">3.0</span>);</span><br><span class="line">    <span class="type">vec3</span> p = <span class="built_in">abs</span>(<span class="built_in">fract</span>(c.xxx + K.xyz) * <span class="number">6.0</span> - K.www);</span><br><span class="line">    <span class="keyword">return</span> c.z * <span class="built_in">mix</span>(K.xxx, <span class="built_in">clamp</span>(p - K.xxx, <span class="number">0.0</span>, <span class="number">1.0</span>), c.y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h4 id="rgb转hls">rgb转hls</h4>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">vec3</span> rgb2hls(<span class="type">vec3</span> c)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">vec4</span> K = <span class="type">vec4</span>(<span class="number">0.0</span>, <span class="number">-1.0</span>/<span class="number">3.0</span>, <span class="number">2.0</span>/<span class="number">3.0</span>, <span class="number">-1.0</span>);</span><br><span class="line">    <span class="type">vec4</span> p = <span class="built_in">mix</span>(<span class="type">vec4</span>(c.bg, K.wz), <span class="type">vec4</span>(c.gb, K.xy), <span class="built_in">step</span>(c.b, c.g));</span><br><span class="line">    <span class="type">vec4</span> q = <span class="built_in">mix</span>(<span class="type">vec4</span>(p.xyw, c.r), <span class="type">vec4</span>(c.r, p.yzx), <span class="built_in">step</span>(p.x, c.r));</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> Cmax = q.x;</span><br><span class="line">    <span class="type">float</span> Cmin = <span class="built_in">min</span>(q.w, q.y);</span><br><span class="line">    <span class="type">float</span> d    = Cmax - Cmin;           <span class="comment">// Δ (chroma)</span></span><br><span class="line">    <span class="type">float</span> L    = <span class="number">0.5</span> * (Cmax + Cmin);   <span class="comment">// HLS 的 Lightness</span></span><br><span class="line">    <span class="type">float</span> e    = <span class="number">1.0e-10</span>;</span><br><span class="line">    <span class="type">float</span> H = <span class="built_in">abs</span>(q.z + (q.w - q.y) / (<span class="number">6.0</span> * d + e));</span><br><span class="line">    <span class="type">float</span> S = d / (<span class="number">1.0</span> - <span class="built_in">abs</span>(<span class="number">2.0</span> * L - <span class="number">1.0</span>) + e);</span><br><span class="line">    <span class="keyword">return</span> <span class="type">vec3</span>(H, L, S);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">vec3</span> hls2rgb(<span class="type">vec3</span> hls)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">float</span> H = hls.x;</span><br><span class="line">    <span class="type">float</span> L = hls.y;</span><br><span class="line">    <span class="type">float</span> S = hls.z;</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> C = (<span class="number">1.0</span> - <span class="built_in">abs</span>(<span class="number">2.0</span> * L - <span class="number">1.0</span>)) * S;</span><br><span class="line">    <span class="type">vec3</span> t = <span class="built_in">clamp</span>(<span class="built_in">abs</span>(<span class="built_in">mod</span>(H * <span class="number">6.0</span> + <span class="type">vec3</span>(<span class="number">0.0</span>, <span class="number">4.0</span>, <span class="number">2.0</span>), <span class="number">6.0</span>) - <span class="number">3.0</span>) - <span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>);</span><br><span class="line">    <span class="keyword">return</span> L + C * (t - <span class="number">0.5</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://blueberrycoder.github.io/2025/08/24/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="blueberry">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Keep learning">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | Keep learning">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/08/24/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2025-08-24 08:52:05" itemprop="dateCreated datePublished" datetime="2025-08-24T08:52:05+08:00">2025-08-24</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-08-25 20:58:53" itemprop="dateModified" datetime="2025-08-25T20:58:53+08:00">2025-08-25</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very
-first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for
-more info. If you get any problems when using Hexo, you can find the
-answer in <a
-target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or
-you can ask me on <a
-target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="quick-start">Quick Start</h2>
-<h3 id="create-a-new-post">Create a new post</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a
-target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="run-server">Run server</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="generate-static-files">Generate static files</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a
-target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a
-target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 
       
     </div>
