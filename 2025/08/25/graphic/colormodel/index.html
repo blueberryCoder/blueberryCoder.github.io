@@ -19,12 +19,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blueberrycoder.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.24.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="光谱 1666年牛顿发现太阳光经三棱镜的折射后可呈现彩色光，称为光的色散现象。  由牛顿的色散实验结果，可知白光是由多种颜色的光所组成。太阳光呈现白色，当它通过三棱镜折射后，将形成由红、橙、黄、绿、蓝、靛、紫（或红、橙、黄、绿、青、蓝、紫）顺次连续分布的彩色光谱，覆盖了大约在390到770纳米的可见光区。  SPD(谱功率密度) 可以用谱功率密度（Spectral Power Distributi">
+    <meta name="description" content="光谱 1666年牛顿发现太阳光经三棱镜的折射后可呈现彩色光，称为光的色散现象。  由牛顿的色散实验结果，可知白光是由多种颜色的光所组成。太阳光呈白色，当它通过三棱镜被折射后，将形成由红、橙、黄、绿、蓝、靛、紫（或红、橙、黄、绿、青、蓝、紫）顺次连续分布的彩色光谱，覆盖了大约在390到770纳米的可见光区。  SPD(谱功率密度) 可以用谱功率密度（Spectral Power Distributi">
 <meta property="og:type" content="article">
 <meta property="og:title" content="色彩模型">
 <meta property="og:url" content="https://blueberrycoder.github.io/2025/08/25/graphic/colormodel/index.html">
 <meta property="og:site_name" content="Keep learning">
-<meta property="og:description" content="光谱 1666年牛顿发现太阳光经三棱镜的折射后可呈现彩色光，称为光的色散现象。  由牛顿的色散实验结果，可知白光是由多种颜色的光所组成。太阳光呈现白色，当它通过三棱镜折射后，将形成由红、橙、黄、绿、蓝、靛、紫（或红、橙、黄、绿、青、蓝、紫）顺次连续分布的彩色光谱，覆盖了大约在390到770纳米的可见光区。  SPD(谱功率密度) 可以用谱功率密度（Spectral Power Distributi">
+<meta property="og:description" content="光谱 1666年牛顿发现太阳光经三棱镜的折射后可呈现彩色光，称为光的色散现象。  由牛顿的色散实验结果，可知白光是由多种颜色的光所组成。太阳光呈白色，当它通过三棱镜被折射后，将形成由红、橙、黄、绿、蓝、靛、紫（或红、橙、黄、绿、青、蓝、紫）顺次连续分布的彩色光谱，覆盖了大约在390到770纳米的可见光区。  SPD(谱功率密度) 可以用谱功率密度（Spectral Power Distributi">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/color_newton.png">
 <meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/color_spectrum.png">
@@ -46,6 +46,7 @@
 <meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/color_gamut.png">
 <meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/color_eg_relative0.png">
 <meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/color_eg_relative1.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/optic_pink_circle.gif">
 <meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/color_model_rgb.png">
 <meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/color_cone_cell_resp.png">
 <meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/color_srgb.png">
@@ -53,11 +54,13 @@
 <meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/color_lcd.jpg">
 <meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/color_rgb_cube.png">
 <meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/yuv420.svg.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/gamma_correction_brightness.png">
+<meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/gamma_correction_gamma_curves.png">
 <meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/color_hsl_hsv_models.svg.png">
 <meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/color_hsl_cone.png">
 <meta property="og:image" content="https://blueberrycoder.github.io/images/graphic/color_hsv_cone.png">
 <meta property="article:published_time" content="2025-08-25T12:02:24.000Z">
-<meta property="article:modified_time" content="2025-09-06T02:37:53.015Z">
+<meta property="article:modified_time" content="2025-11-02T09:51:45.978Z">
 <meta property="article:author" content="blueberry">
 <meta property="article:tag" content="graphic">
 <meta name="twitter:card" content="summary">
@@ -104,6 +107,9 @@
 <script src="/js/third-party/math/mathjax.js" defer></script>
 
 
+<script>
+    console.log("head", JSON.stringify(`/images/graphic/landing.jpg`))
+</script>
 
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
@@ -167,7 +173,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%89%E8%B0%B1"><span class="nav-number">1.</span> <span class="nav-text">光谱</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#spd%E8%B0%B1%E5%8A%9F%E7%8E%87%E5%AF%86%E5%BA%A6"><span class="nav-number">1.1.</span> <span class="nav-text">SPD(谱功率密度)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E6%80%A7%E8%B4%A8"><span class="nav-number">1.2.</span> <span class="nav-text">线性性质</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%A2%9C%E8%89%B2"><span class="nav-number">2.</span> <span class="nav-text">什么是颜色？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%BA%E7%9C%BC%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">人眼的结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E8%89%B2%E7%90%86%E8%AE%BA"><span class="nav-number">3.</span> <span class="nav-text">三色理论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E8%89%B2%E5%BC%82%E8%B0%B1"><span class="nav-number">3.1.</span> <span class="nav-text">同色异谱</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A0%E8%89%B2%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">加色模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#cie-rgb%E5%8C%B9%E9%85%8D%E5%87%BD%E6%95%B0"><span class="nav-number">4.1.</span> <span class="nav-text">CIE RGB匹配函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%9C%E8%89%B2%E7%A9%BA%E9%97%B4"><span class="nav-number">5.</span> <span class="nav-text">颜色空间</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cie-xyz"><span class="nav-number">6.</span> <span class="nav-text">CIE XYZ</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%89%B2%E5%9F%9F"><span class="nav-number">6.1.</span> <span class="nav-text">色域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%9C%E8%89%B2%E6%98%AF%E7%9B%B8%E5%AF%B9%E7%9A%84"><span class="nav-number">6.2.</span> <span class="nav-text">颜色是相对的</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rgb%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">7.</span> <span class="nav-text">RGB色彩模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E6%B3%95%E9%A2%9C%E8%89%B2%E6%A8%A1%E5%9E%8B"><span class="nav-number">7.1.</span> <span class="nav-text">加法颜色模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rgb%E8%AE%BE%E5%A4%87"><span class="nav-number">7.2.</span> <span class="nav-text">RGB设备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E6%A0%BC%E5%BC%8F"><span class="nav-number">7.2.1.</span> <span class="nav-text">打包格式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%A0%E4%BD%95%E8%A1%A8%E7%A4%BA"><span class="nav-number">7.3.</span> <span class="nav-text">几何表示</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#yuv%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">8.</span> <span class="nav-text">YUV色彩模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8Ergb%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-number">8.1.</span> <span class="nav-text">与RGB的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#itu-r-bt.601-%E8%BD%AC%E6%8D%A2"><span class="nav-number">8.1.1.</span> <span class="nav-text">ITU-R BT.601 转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rgb%E8%BD%ACyuv"><span class="nav-number">8.1.1.1.</span> <span class="nav-text">RGB转YUV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%86%E5%8F%98%E6%8D%A2"><span class="nav-number">8.1.1.2.</span> <span class="nav-text">逆变换</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#itu-r-bt.709-%E8%BD%AC%E6%8D%A2"><span class="nav-number">8.1.2.</span> <span class="nav-text">ITU-R BT.709 转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rgb%E8%BD%ACyuv-1"><span class="nav-number">8.1.2.1.</span> <span class="nav-text">RGB转YUV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%86%E5%8F%98%E5%8C%96"><span class="nav-number">8.1.2.2.</span> <span class="nav-text">逆变化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E6%A0%BC%E5%BC%8F-1"><span class="nav-number">8.1.3.</span> <span class="nav-text">打包格式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hsl%E5%92%8Chsv%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">9.</span> <span class="nav-text">HSL和HSV色彩模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-number">9.1.</span> <span class="nav-text">色彩模型转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rgb%E8%BD%AChsl"><span class="nav-number">9.1.1.</span> <span class="nav-text">RGB转HSL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rgb%E8%BD%AChsv"><span class="nav-number">9.1.2.</span> <span class="nav-text">RGB转HSV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E4%BB%A3%E7%A0%81"><span class="nav-number">9.1.3.</span> <span class="nav-text">转换代码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rgb%E8%BD%AChsv-1"><span class="nav-number">9.1.3.1.</span> <span class="nav-text">rgb转hsv</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rgb%E8%BD%AChls"><span class="nav-number">9.1.3.2.</span> <span class="nav-text">rgb转hls</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%89%E8%B0%B1"><span class="nav-number">1.</span> <span class="nav-text">光谱</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#spd%E8%B0%B1%E5%8A%9F%E7%8E%87%E5%AF%86%E5%BA%A6"><span class="nav-number">1.1.</span> <span class="nav-text">SPD(谱功率密度)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E6%80%A7%E8%B4%A8"><span class="nav-number">1.2.</span> <span class="nav-text">线性性质</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%A2%9C%E8%89%B2"><span class="nav-number">2.</span> <span class="nav-text">什么是颜色？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%BA%E7%9C%BC%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">人眼的结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E8%89%B2%E7%90%86%E8%AE%BA"><span class="nav-number">3.</span> <span class="nav-text">三色理论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E8%89%B2%E5%BC%82%E8%B0%B1"><span class="nav-number">3.1.</span> <span class="nav-text">同色异谱</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%A0%E8%89%B2%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">加色模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#cie-rgb%E5%8C%B9%E9%85%8D%E5%87%BD%E6%95%B0"><span class="nav-number">4.1.</span> <span class="nav-text">CIE RGB匹配函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%9C%E8%89%B2%E7%A9%BA%E9%97%B4"><span class="nav-number">5.</span> <span class="nav-text">颜色空间</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cie-xyz"><span class="nav-number">6.</span> <span class="nav-text">CIE XYZ</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%89%B2%E5%9F%9F"><span class="nav-number">6.1.</span> <span class="nav-text">色域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%9C%E8%89%B2%E6%98%AF%E7%9B%B8%E5%AF%B9%E7%9A%84"><span class="nav-number">6.2.</span> <span class="nav-text">颜色是相对的</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rgb%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">7.</span> <span class="nav-text">RGB色彩模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E6%B3%95%E9%A2%9C%E8%89%B2%E6%A8%A1%E5%9E%8B"><span class="nav-number">7.1.</span> <span class="nav-text">加法颜色模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rgb%E8%AE%BE%E5%A4%87"><span class="nav-number">7.2.</span> <span class="nav-text">RGB设备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E6%A0%BC%E5%BC%8F"><span class="nav-number">7.2.1.</span> <span class="nav-text">打包格式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%A0%E4%BD%95%E8%A1%A8%E7%A4%BA"><span class="nav-number">7.3.</span> <span class="nav-text">几何表示</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#yuv%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">8.</span> <span class="nav-text">YUV色彩模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8Ergb%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-number">8.1.</span> <span class="nav-text">与RGB的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#itu-r-bt.601-%E8%BD%AC%E6%8D%A2"><span class="nav-number">8.1.1.</span> <span class="nav-text">ITU-R BT.601 转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rgb%E8%BD%ACyuv"><span class="nav-number">8.1.1.1.</span> <span class="nav-text">RGB转YUV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%86%E5%8F%98%E6%8D%A2"><span class="nav-number">8.1.1.2.</span> <span class="nav-text">逆变换</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#itu-r-bt.709-%E8%BD%AC%E6%8D%A2"><span class="nav-number">8.1.2.</span> <span class="nav-text">ITU-R BT.709 转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rgb%E8%BD%ACyuv-1"><span class="nav-number">8.1.2.1.</span> <span class="nav-text">RGB转YUV</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%86%E5%8F%98%E5%8C%96"><span class="nav-number">8.1.2.2.</span> <span class="nav-text">逆变化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E6%A0%BC%E5%BC%8F-1"><span class="nav-number">8.1.3.</span> <span class="nav-text">打包格式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gamma%E6%A0%A1%E6%AD%A3"><span class="nav-number">9.</span> <span class="nav-text">Gamma校正</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hsl%E5%92%8Chsv%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B"><span class="nav-number">10.</span> <span class="nav-text">HSL和HSV色彩模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%89%B2%E5%BD%A9%E6%A8%A1%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-number">10.1.</span> <span class="nav-text">色彩模型转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rgb%E8%BD%AChsl"><span class="nav-number">10.1.1.</span> <span class="nav-text">RGB转HSL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rgb%E8%BD%AChsv"><span class="nav-number">10.1.2.</span> <span class="nav-text">RGB转HSV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E4%BB%A3%E7%A0%81"><span class="nav-number">10.1.3.</span> <span class="nav-text">转换代码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rgb%E8%BD%AChsv-1"><span class="nav-number">10.1.3.1.</span> <span class="nav-text">rgb转hsv</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rgb%E8%BD%AChls"><span class="nav-number">10.1.3.2.</span> <span class="nav-text">rgb转hls</span></a></li></ol></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -253,7 +259,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2025-09-06 10:37:53" itemprop="dateModified" datetime="2025-09-06T10:37:53+08:00">2025-09-06</time>
+      <time title="Modified: 2025-11-02 17:51:45" itemprop="dateModified" datetime="2025-11-02T17:51:45+08:00">2025-11-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -277,17 +283,23 @@
     <div class="post-body" itemprop="articleBody"><h1 id="光谱">光谱</h1>
 <p>1666年牛顿发现太阳光经三棱镜的折射后可呈现彩色光，称为光的色散现象。</p>
 <p><img src="/images/graphic/color_newton.png" alt="newton" width="600">
-由牛顿的色散实验结果，可知白光是由多种颜色的光所组成。太阳光呈现白色，当它通过三棱镜折射后，将形成由红、橙、黄、绿、蓝、靛、紫（或红、橙、黄、绿、青、蓝、紫）顺次连续分布的彩色光谱，覆盖了大约在390到770纳米的可见光区。</p>
+由牛顿的色散实验结果，可知白光是由多种颜色的光所组成。太阳光呈白色，当它通过三棱镜被折射后，将形成由红、橙、黄、绿、蓝、靛、紫（或红、橙、黄、绿、青、蓝、紫）顺次连续分布的彩色光谱，覆盖了大约在390到770纳米的可见光区。</p>
 <p><img src="/images/graphic/color_spectrum.png" alt="spd" width="600"></p>
 <h2 id="spd谱功率密度">SPD(谱功率密度)</h2>
-<p>可以用谱功率密度（Spectral Power Distribution
-(SPD)）用来描述光，用来描述光在不同波长之间的能量，它的单位是辐射度单位/波长，例如(watts/nm)。
-比如下面这幅图中，太阳部分光线的SPD和蓝天部分的SPD如下：</p>
+<p>可以用谱功率密度（Spectral Power
+Distribution）用来描述光。SPD用来描述单位光在不同波长之间的能量分布，它的单位是辐射度单位/波长，例如(watts/nm)。</p>
+<blockquote>
+<p>Note: In radiometry, photometry, and color science, a spectral power
+distribution (SPD) measurement describes the power per unit area per
+unit wavelength of an illumination (radiant exitance).</p>
+<p>power 为单位时间内的能量，单位为watt。即</p>
+</blockquote>
+<p>比如下面这幅图中，太阳部分光线的SPD和蓝天部分的SPD如下：</p>
 <p><img src="/images/graphic/color_eg_spd.png" alt="spd" width="600">
-再如下图，不同光的不同的SPD:
+再如下图不同光的不同的SPD:
 <img src="/images/graphic/color_spd2.png" alt="spd" width="600"></p>
 <h2 id="线性性质">线性性质</h2>
-<p>SPD具有线性性质，比如蓝色和黄色的光加起来得到的SPD，就是蓝色和黄色分别得SPD相加。
+<p>SPD具有线性性质，比如蓝色和黄色的光加起来得到的SPD，就是蓝色光和黄色光分别的SPD相加。
 <img src="/images/graphic/color_spd_linear.png" alt="spd" width="600"></p>
 <h1 id="什么是颜色">什么是颜色？</h1>
 <p>颜色是人眼感知得到的，它并不是光的一种物理属性。不同波长的光也不是颜色。</p>
@@ -298,14 +310,14 @@
 <p><img src="/images/graphic/color_eye_cones.png" alt="spd" width="600">
 视锥细胞也可以分为三种：S型、M型、L型，它们对不同波长的响应强度如下：
 <img src="/images/graphic/color_cone_resp.png" alt="spd" width="600">
-下图是从12给不同人中统计的视觉细胞的类型分布，注意不同类型视锥细胞的比例存在高度差异。这也就是说，不同的人感知到的颜色其实是有很大差异的（每个人的看到的世界是不一样的🐶）。
+下图是从12个不同人中统计的视觉细胞的类型分布，注意不同类型视锥细胞的比例存在高度差异。这也就是说，不同的人感知到的颜色其实是有很大差异的（每个人的看到的世界是不一样的🐶）。
 <img src="/images/graphic/color_cones_distribute.png" alt="spd" width="600"></p>
 <h1 id="三色理论">三色理论</h1>
 <p>了解以上理论支持，人们就可以用一种数学模型来描述人眼对光的感知。人眼感知到的光的能量等于人眼的三种细胞对不同波长的强度乘以光源的SPD中不同波长的强度然后相加，可以用如下数学公式描述：</p>
 <p><img src="/images/graphic/color_spd_cones.png" alt="spd" width="600"></p>
 <h2 id="同色异谱">同色异谱</h2>
-<p>有以上积分的定义，我们可以得出对于人眼感知到的颜色，光源其实可以拥有不同的频谱。（只要保证最后积分和的结果是一致的就行）。
-如下图中，不同的频谱，其实最终人眼感知到的能量是一样的。
+<p>由以上的数学定义，我们可以得出对于人眼感知到的颜色，光源其实可以拥有不同的频谱。（只要保证最后积分和的结果是一致的就行）。
+如下图中，4张不同的频谱，最终人眼感知到的能量是一样的。
 <img src="/images/graphic/color_metamerism.png" alt="spd" width="600">
 下图中2个太阳的频谱虽然不同，但是最终人眼感知到的是一样的。
 <img src="/images/graphic/color_sunlight.png" alt="spd" width="600"></p>
@@ -319,8 +331,10 @@ sR(λ) + G sG(λ) + B sB(λ)， R,G,B代表它们的强度。</p>
 <img src="/images/graphic/color_cie_primary.png" alt="spd" width="600">
 颜色匹配函数如下，对于任意的频谱，人眼感知到到的颜色能通过这个函数的到人眼感知到的颜色（定义在CIE
 RGB中的颜色）
-<img src="/images/graphic/color_cie_rgb.png" alt="spd" width="600">
-（匹配函数中，有负数的情况，这种可以在实验时向目标色加一个红色强度的光来实现，即实现了对原色的减法）</p>
+<img src="/images/graphic/color_cie_rgb.png" alt="spd" width="600"></p>
+<blockquote>
+<p>在匹配函数中有负数的情况，这种可以在实验时向目标色加一个红色强度的光来实现，即实现了对原色的减法。</p>
+</blockquote>
 <h1 id="颜色空间">颜色空间</h1>
 <p>色彩模型（color
 model）是用一组数组（每个颜色用3个或4个数字来表示）来描述颜色的数学模型。</p>
@@ -328,19 +342,38 @@ model）是用一组数组（每个颜色用3个或4个数字来表示）来描�
 <p>CIE
 XYZ中定义的X、Y、Z是并不存在的颜色。其中Y是表示的亮度(luminance)，另外2个是颜色相关的虚拟量。这个定义消除了负数的情况。
 <img src="/images/graphic/color_cie_xyz.png" alt="spd" width="600"></p>
+<blockquote>
+<p>CIE在1931年定义了新的三刺激系统X,Y,Z，它是实验RGB的线性变换
+https://en.wikipedia.org/wiki/CIE_1931_color_space</p>
+</blockquote>
+<video src="/videos/graphic/Visible_gamut_within_CIEXYZ_color_space_D65_whitepoint_mesh.webm.480p.vp9.webm" controls style="max-width: 100%; border-radius: 12px;">
+</video>
+<blockquote>
+<p>更多色彩空间几何模型可以参考： <a
+target="_blank" rel="noopener" href="https://commons.wikimedia.org/wiki/File:Visible_gamut_within_CIEXYZ_color_space_D65_whitepoint_mesh.webm"
+class="uri">https://commons.wikimedia.org/wiki/File:Visible_gamut_within_CIEXYZ_color_space_D65_whitepoint_mesh.webm</a></p>
+</blockquote>
 <h2 id="色域">色域</h2>
-<p>为了让我们更好的理解CIE
-XYZ，通过一下数据手段将三维的颜色空间显示在了二维平面。人眼能看见的颜色就是下图的这个马蹄形状。
-它通过统一亮度Y，然后对X、Y、Z归一化，然后痛殴下面的数学公式的到x,y,z，因为x+y+z
-= 1 所以我们可以在二维平面呈现这个颜色空间。
-<img src="/images/graphic/color_cie_gamut.png" alt="spd" width="720"></p>
-<p>下图是一些常见的绝对色彩空间的色域图：</p>
+<p>为了让我们更好的在二维平面中展示CIE
+XYZ，通过以下手段将三维的颜色空间显示在了二维平面。人眼能看见的颜色就是下图的这个马蹄形状。
+它通过统一亮度Y，然后对X、Y、Z归一化，然后通过下面的数学公式得到x,y,z，因为x、y、z满足x+y+z=1所以我们可以在二维平面呈现这个颜色空间。</p>
+<p><img src="/images/graphic/color_cie_gamut.png" alt="spd" width="720"></p>
+<p>下图是一些常见的色彩空间的色域图：</p>
 <p><img src="/images/graphic/color_gamut.png" alt="spd" width="720"></p>
+<blockquote>
+<p>CIE XYZ
+是绝对色彩空间。它直接描述光的“物理能量分布”，是绝对的参考空间。
+色温指的是一个理想“黑体”在某个温度下发出的光的颜色。
+sRGB中D65定义为6504k，为显示器标准白光。</p>
+</blockquote>
 <h2 id="颜色是相对的">颜色是相对的</h2>
 <p>观察下面的图：
 <img src="/images/graphic/color_eg_relative0.png" alt="spd" width="720"></p>
 <p><img src="/images/graphic/color_eg_relative1.png" alt="spd" width="720">
-你能看出黄色是一直的吗？（你的大脑一直在欺骗你🐶）</p>
+你能看出黄色是一致的吗？（你的大脑一直在欺骗你🐶）</p>
+<p>再例如下图，请盯着中间的十字一致看。
+<img src="/images/graphic/optic_pink_circle.gif" width="720"></img></p>
+<p>你否是看到了一个绿色小球在转动？</p>
 <h1 id="rgb色彩模型">RGB色彩模型</h1>
 <p>RGB色彩模型是由红(R)、绿(G)、蓝(B)组成的一种加法颜色模型。它是我们在电视机、计算机中种常用的颜色模型。RGB色彩模型是一种设备依赖(device-dependent)的色彩模型，不同的设备因为厂商有不同的物理实现（比如：使用不同的荧光粉、不同的染料），所提供的红、绿、蓝的实现等级不一样，甚至同一台设备随着时间推移老化提供出的颜色也不是不一样的。所以如果没有色彩管理(color
 management)，不同的设备将不能提供出一致的颜色。</p>
@@ -356,19 +389,19 @@ point)。当所有分量的强度都相等时，我们得到是一种灰色，�
 570 nm、540 nm 和 440
 nm）。三类受体所接收到信号的差异，使得大脑能够区分非常广泛的颜色范围；总体上，人眼对黄绿色光以及绿到橙区间的色相差异最为敏感。</p>
 <p><img src="/images/graphic/color_cone_cell_resp.png" alt="cone" width="360"></p>
-<p>仅使用三种原色并不足以复现所有颜色；只有位于由三原色色度所定义的颜色三角形内的那些颜色，才能通过对这三种光非负量进行加法混合加以再现。</p>
+<p>仅使用三种原色并不足以复现所有颜色；只有位于由三原色色度所定义的颜色三角形内的那些颜色，才能通过对这三种光进行加法混合加以再现。</p>
 <p>如图，是sRGB颜色模型在色域图中的分布。</p>
 <p><img src="/images/graphic/color_srgb.png" alt="sRGB" width="360"></p>
 <h2 id="rgb设备">RGB设备</h2>
 <p>常见的RGB显示设备有：阴极射线管(CRT)、液晶显示（LCD）、OLED等设备。屏幕上的每个像素由三个微小、彼此非常接近但仍相互独立的
 RGB
-发光单元驱动构成。在通常的观看距离下，这些独立的光源不可分辨，人的眼睛会把它们感知为某一种均匀的颜色。所有像素在矩形屏幕表面共同排列，便构成了彩色图像。在数字图像处理过程中，每个像素都可以在计算机内存或接口硬件（例如显卡）中，用红、绿、蓝三个颜色分量的二进制数值来表示。经过适当的管理，这些数值会通过伽马校正转换为强度或电压，以校正某些设备固有的非线性，从而在显示设备上再现预期的亮度/强度。</p>
+发光单元驱动构成。在通常的观看距离下，这些独立的光源不可分辨，人的眼睛会把它们感知为某一种均匀的颜色。所有像素在矩形屏幕表面共同排列，便构成了彩色图像。在数字图像处理过程中，每个像素都可以在计算机内存或接口硬件（例如显卡）中，用红、绿、蓝三个颜色分量的二进制数值来表示。经过适当的管理，这些数值会通过伽马校正转换为电流或电压，以校正某些设备固有的非线性，从而在显示设备上再现预期的亮度/强度。</p>
 <p>CRT显示：</p>
 <p><img src="/images/graphic/color_crt_tv.webp" alt="crt" width="360"></p>
 <p>LCD显示设备：</p>
 <p><img src="/images/graphic/color_lcd.jpg" alt="lcd" width="360"></p>
 <h3 id="打包格式">打包格式</h3>
-<p>设备内存中存储常用RGB_888、RGBA_8888、RGB_565等来存储RGB颜色。RGB_888即R、G、B的强度分别用8位二进制来表示。在这种体系下，允许16,777,216（256³
+<p>设备内存中存储常用RGBA_8888、RGB_888、RGB_565等来存储RGB颜色。RGB_888即R、G、B的强度分别用8位二进制来表示。在这种体系下，允许16,777,216（256³
 或 2²⁴） 种离散的 R、G、B
 组合。为增加明暗层次，人们采用了多种做法；一些格式（如 .png、.tga
 等）会使用第四个灰度颜色通道作为遮罩层，通常称为 RGB32（即带有额外通道的
@@ -546,11 +579,14 @@ YUV3 方案每像素用 3 字节，顺序为： y0, u0, v0, y1, u1, v1, … （�
 <p><strong>4:2:0</strong></p>
 <p>4:2:0 使用极其广泛。主要格式有
 IMC2、IMC4、YV12、NV12。这些格式都是平面型（planar），即把 Y、U、V
-各自成片集中存放，而不是交错；在 8 位通道下总计每像素 12 位。 -
-NV12：可能是最常见的 8-bit 4:2:0 格式；Android
+各自成片集中存放，而不是交错；在 8 位通道下总计每像素 12 位。</p>
+<ul>
+<li><p>NV12：可能是最常见的 8-bit 4:2:0 格式；Android
 相机预览的默认格式。先写完整 Y 平面，然后写交织的色度行：U0, V0, U1, V1,
-… - I420：更简单、也更常用。先写完整 Y 平面，再写完整 U 平面，最后写完整
-V 平面。</p>
+…</p></li>
+<li><p>I420：更简单、也更常用。先写完整 Y 平面，再写完整 U
+平面，最后写完整 V 平面。</p></li>
+</ul>
 <p><img src="/images/graphic/yuv420.svg.png" alt="yuv420" width="720"></p>
 <ul>
 <li><p>IMC2：先写完整的 Y 图；色度每行按 V0…Vn, U0…Un 排列，其中 n
@@ -558,6 +594,24 @@ V 平面。</p>
 <li><p>IMC4：与 IMC2 类似，但色度行顺序为 U0…Un, V0…Vn。</p></li>
 <li><p>YV12：与 I420 相同，只是 U/V 平面的顺序对调。</p></li>
 </ul>
+<h1 id="gamma校正">Gamma校正</h1>
+<p>在物理设备中，如CRT显示器。当我们将颜色的亮度调整高一倍时，设备并不会将输出的电压增加一倍。将输出的电压线性翻倍，显示器的亮度并不会线性的加倍，而是会大约按2.2的次方的指数关系加倍，这个指数关系被称为显示器的gamma。</p>
+<p><span class="math display">$$\begin{aligned} L = V^{\gamma}，其中 γ ≈
+2.2 \end{aligned}$$</span></p>
+<p>下图能更高的解释这个现象，它对比了对人观察到的亮度的线性变化和物理上电压的线性变换对应的亮度。
+<img src="/images/graphic/gamma_correction_brightness.png"></img>
+因为人眼更符合上图中的第一个线性变换，所以直到今天显示器依然会使用一个幂函数来转换输出的颜色。</p>
+<p>这个非线性转换更好的适配了我们的视觉，但是它带来了另一个渲染的问题：我们在显示器中观察到的颜色的强度变换实际上时非线性的。
+如下图：
+<img src="/images/graphic/gamma_correction_gamma_curves.png"><img>
+其中的虚线是线性的表示颜色空间，实线是显示器以一种幂函数的显示颜色空间。举个例子：当我们有一个颜色(0.5,0.0,0.0),它代表一个半红色，当我们对它的色值翻一倍为（1.0,0.0,0.0）。它原始的颜色在显示器中其实为（0.218，0.0，0.0）翻倍后会比表示为（1.0，0.0，0.0）实际上显示器对他翻了约4.5倍。</p>
+<p>所以我们在设计图形颜色，都假设我们是在线性空间中，其实在物理上是不正确的。</p>
+<p>如果我们想让显示器显示半红（0.5,0.0,0.0）我们根据上面的图得到gamma假定时2.2，因为显示器是会给颜色值取2.2的次方。所以我们应该事先使用一个逆操作（gamma校正）对颜色进行校正，然后传递显示器。显示器最红又对这个值进行gamma变化，然后就真的显示我们的色值。</p>
+<p><span
+class="math display">(0.5, 0.0, 0.0)<sup>(</sup>1/2.2) = (0.5, 0.0, 0.0)<sup>0.45</sup> = (0.73, 0.0, 0.0)</span></p>
+<p>然后把(0.73,0.0,0.0)传递给显示器。显示器然后进行转换:</p>
+<p><span
+class="math display">(0.73, 0.0, 0.0)<sup>2.0</sup> = (0.5, 0.0, 0.0)</span></p>
 <h1 id="hsl和hsv色彩模型">HSL和HSV色彩模型</h1>
 <p>HSL 和 HSV 是在 RGB
 色彩模型中用来表示颜色点的两种最常见的圆柱坐标表示。与笛卡尔（立方体）表示相比，这两种表示通过重新组织
@@ -577,12 +631,11 @@ HSV 都是对设备依赖的 RGB
 空间中红、绿、蓝三原色的具体颜色，以及用于表示这些原色分量大小的伽马校正。因此，每一台
 RGB 设备都有其独特的 HSL 与 HSV 空间；相同的 HSL/HSV 数值在不同的基准
 RGB 空间中会表示不同的颜色。</p>
-<p>在这两种圆柱体几何中，围绕中央垂直轴的角度对应色相（hue）：从 0°
-的红原色出发，经过 120° 的绿原色与 240° 的蓝原色，最后在 360°
-回到红。两种几何的中轴都由中性、无彩或灰色组成：自上而下从 亮度 1（或值
-1）的白到 亮度 0（或值 0）的黑。
-在两种几何中，加色的原色与二次色——红、黄、绿、青、蓝、洋红——以及它们之间相邻成分的线性混合（有时称为纯色）都以饱和度
-1排布在圆柱的外缘。这些饱和色在 HSL 中的明度(lightness)为 0.5，而在 HSV
+<p>在这两种圆柱体几何中，围绕中央垂直轴的角度对应色相（hue）：从0°的红原色出发，经过120°的绿原色与240°的蓝原色，最后在
+360°回到红。两种几何的中轴都由中性、无彩或灰色组成：自上而下从亮度
+1（或值 1）的白到 亮度 0（或值 0）的黑。</p>
+<p>在两种几何中，加色的原色与二次色——红、黄、绿、青、蓝、洋红——以及它们之间相邻成分的线性混合（有时称为纯色）都以饱和度
+1排布在圆柱的外缘。这些饱和色在 HSL中的明度(lightness)为 0.5，而在 HSV
 中的值(value)为 1。把这些纯色与黑混合（得到所谓的
 shade，加黑）时，饱和度不变。在 HSL
 中，与白混合（tint，加白）时饱和度也不变；只有同时与黑和白混合（tone，加灰）时，饱和度才会小于

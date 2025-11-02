@@ -1224,7 +1224,7 @@ pre code {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #47b0c6;
+  background: #1f0882;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -2531,4 +2531,12 @@ header.header {
 .img-row img {
   display: block;
   height: auto;
+}
+.post-banner {
+  width: 100%;
+  height: 300px; /* 必须要有高度！ */
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  margin-bottom: 20px;
 }
