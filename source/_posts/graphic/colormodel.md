@@ -1,7 +1,7 @@
 ---
 title: 色彩模型
 date: 2025-08-25 20:02:24
-banner: /images/graphic/color_spectrum.png
+banner: /images/graphic/landing.jpg
 tags:
 - [graphic]
 categories:
